@@ -5,3 +5,5 @@
 #include <iostream>
 
 
+int t = 5;
+cout << t;
