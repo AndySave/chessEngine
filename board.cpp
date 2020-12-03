@@ -1,9 +1,14 @@
 //
 // Created by andre on 03.12.2020.
 //
-//this is a board
+
 #include <iostream>
+using namespace std;
+typedef long long ll;
 
+int main(){
 
-int t = 5;
-cout << t;
+    cout << 5;
+
+}
+
