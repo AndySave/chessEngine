@@ -2,16 +2,16 @@
 typedef unsigned long long u64;
 
 // Undo move structure
-typedef struct {
+typedef struct{
     int move;
     int castlePerm;
     int enPas;
     int fiftyMove;
     u64 posKey;
-}undo;
+} Undo;
 
 // Board structure
-typedef struct {
+typedef struct{
     int pieces[120];
     u64 pawns[3];
 
@@ -31,9 +31,18 @@ typedef struct {
     int majPce[3];
     int minPce[3];
 
-    undo history[2048];
+    Undo history[2048];
 
-}board;
+    int pieceList[13][10];
 
-void boardInit(short *brd);
+} Board;
+
+// Board methods
+extern void printBoard120(Board *brd);
+
+
+
+
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
+extern Board board;
+

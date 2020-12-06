@@ -3,10 +3,17 @@
 //TODO printBoard, 1 faktiske verdier, en med brikker (boolean for aa velge.)
 //TODO enum brikke til navn
 #include <bits/stdc++.h>
+#include "board.h"
+
 using namespace std;
 
-
-void boardInit(short *brd){
-
+void printBoard120(const Board *brd){
+    for (int i = 0; i < 120; i++){
+        cout << brd->pieces[i];
+        if (i % 10 == 0){
+            cout << endl;
+        }
+    }
 }
+
 
