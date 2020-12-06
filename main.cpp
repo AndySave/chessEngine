@@ -4,6 +4,5 @@ typedef long long ll;
 
 int main(){
 
-    cout << 5;
 
 }
