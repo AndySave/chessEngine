@@ -1,14 +1,8 @@
-//
-// Created by andre on 03.12.2020.
-//
+//TODO 120sq brett
+//TODO 120sq til 64 sq brett
+//TODO printBoard, 1 faktiske verdier, en med brikker (boolean for aa velge.)
+//TODO enum brikke til navn
 
-#include <iostream>
-using namespace std;
-typedef long long ll;
-//t.
-int main(){
-
-    cout << 5;
+void tenTwelveBoard() {
 
 }
-
