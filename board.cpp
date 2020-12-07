@@ -66,6 +66,9 @@ void FENBoardUpdater(Board *brd, string fen) {
     //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
 
+    //enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
+
+
     vector<string> elements(6);
     int c = 0;
     for (int i = 0; i<fen.size(); i++) {
@@ -75,6 +78,17 @@ void FENBoardUpdater(Board *brd, string fen) {
         }
         elements[c] += fen[i];
     }
+    int castlePerm = 0;
+    for (char c : elements[2]) {
+        switch (c) {
+            case 'k': castlePerm | BKC; break;
+            case 'K': castlePerm | WKC; break;
+            case 'Q': castlePerm | WQC; break;
+            case 'q': castlePerm | BQC; break;
+            default : break;
+        }
+    }
+    brd->castlePerm = castlePerm;
 
     string chessBoard = "";
     for (char c : elements[0]) {
@@ -116,8 +130,8 @@ void FENBoardUpdater(Board *brd, string fen) {
             case 'k': v = k; break;
             default : v = o; break;
         }
-        brd->pieces[sq64sq120[squareNr[i]]] = v;
-        i++;
+        brd->pieces[sq64sq120[squareNr[castlePerm]]] = v;
+        castlePerm++;
     }
 
     // Updating side to move
