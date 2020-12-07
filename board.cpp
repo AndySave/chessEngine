@@ -81,10 +81,10 @@ void FENBoardUpdater(Board *brd, string fen) {
     int castlePerm = 0;
     for (char c : elements[2]) {
         switch (c) {
-            case 'k': castlePerm = castlePerm | BKC; break;
-            case 'K': castlePerm = castlePerm | WKC; break;
-            case 'Q': castlePerm = castlePerm | WQC; break;
-            case 'q': castlePerm = castlePerm | BQC; break;
+            case 'k': castlePerm | BKC; break;
+            case 'K': castlePerm | WKC; break;
+            case 'Q': castlePerm | WQC; break;
+            case 'q': castlePerm | BQC; break;
             default : break;
         }
     }
