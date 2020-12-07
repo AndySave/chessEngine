@@ -6,6 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(chessEngine
-        defenitions.cpp
+        board.cpp
         defenitions.h
         main.cpp board.cpp)
