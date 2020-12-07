@@ -7,13 +7,12 @@
 
 using namespace std;
 
-void printBoard120(const Board *brd){
+void printBoard120(Board *brd){
     for (int i = 0; i < 120; i++){
         cout << brd->pieces[i];
-        if (i % 10 == 0){
+        if ((i+1) % 10 == 0){
             cout << endl;
         }
     }
 }
-
 
