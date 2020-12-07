@@ -8,4 +8,4 @@ include_directories(.)
 add_executable(chessEngine
         defenitions.cpp
         defenitions.h
-        main.cpp)
+        main.cpp board.cpp)
