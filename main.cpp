@@ -11,9 +11,8 @@ int main(){
     initBitMasks();
     initHashkeys();
 
-    printBoard(&board);
 
-    cout << generateHash(&board);
+    printBoard(&board);
 }
 
 

@@ -60,6 +60,7 @@ extern void clearBit(u64 &bitBoard, short sq);
 extern u64 rand64();
 extern void initHashkeys();
 extern u64 generateHash(Board *brd);
+extern void FENBoardUpdater(Board *board, std::string fen);
 
 
 enum sideToMove : short {white, black};
