@@ -146,7 +146,10 @@ void FENBoardUpdater(Board *brd, string fen) {
     brd->posKey = generateHash(brd);
 }
 int algebraicTo64(string square) {
-
+    //a1 = 0
+    int row = square[1] - '0';
+    int col = square[0] - 96;
+    return (row-1)*8 + col - 1;
 }
 
 

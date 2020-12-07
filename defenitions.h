@@ -45,6 +45,7 @@ struct Board{
 extern int sq64(int sq);
 extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
+extern int algebraicTo64(std::string square);
 
 
 // Bit board metoder

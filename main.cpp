@@ -18,5 +18,6 @@ int main(){
     initBitBoard(&board);
 
     printBoard(&board);
+    cout << algebraicTo64("a1");
 }
 
