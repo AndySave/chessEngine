@@ -111,6 +111,7 @@ void FENBoardUpdater(Board *brd, string fen) {
             C++;
         }
     }
+    //w
     int i = 0;
     for (char c : chessBoard) {
         short v;
