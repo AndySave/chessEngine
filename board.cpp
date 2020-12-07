@@ -154,10 +154,20 @@ void FENBoardUpdater(Board *board, string fen) {
             chessBoard += c;
         }
     }
-    
+    string SSSSSS = "";
+    SSSSSS+= chessBoard.substr(56,8);
+    SSSSSS+= chessBoard.substr(48,8);
+    SSSSSS+= chessBoard.substr(40,8);
+    SSSSSS+= chessBoard.substr(32,8);
+    SSSSSS+= chessBoard.substr(24,8);
+    SSSSSS+= chessBoard.substr(16,8);
+    SSSSSS+= chessBoard.substr(8,8);
+    SSSSSS+= chessBoard.substr(0,8);
+    cout << SSSSSS.length() << endl;
+
 
     int i = 0;
-    for (char c : chessBoard) {
+    for (char c : SSSSSS) {
         short v;
         switch (c) {
             case 'e':
