@@ -56,6 +56,75 @@ void printBoard(Board *brd) {
             }
         }
     }
+    cout << "side: " << ((brd->side == 0) ? 'w' : 'b') << endl;
+    cout << "enPas: " << brd->enPas << endl;
+    cout << "castle: " << brd->castlePerm << endl;
+    cout << "key: " << brd->posKey << endl;
+}
+
+void FENBoardUpdater(Board *brd, string fen) {
+    //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
+
+    vector<string> elements(6);
+    int c = 0;
+    for (int i = 0; i<fen.size(); i++) {
+        if (fen[i] == ' ') {
+            c++;
+            continue;
+        }
+        elements[c] += fen[i];
+    }
+
+    string chessBoard = "";
+    for (char c : elements[0]) {
+        if (c < 60) {
+            int empties = c - '0';
+            for (int i = 0; i<empties; i++) {
+                chessBoard += 'e';
+            }
+        } else if (c != '/') {
+            chessBoard += c;
+        }
+    }
+
+    int squareNr[64];
+    int C = 0;
+    for (int rank = 7; rank >= 0; rank--) {
+        for (int file = 0; file < 8; file++) {
+            int sq = (rank * 8 + file);
+            squareNr[C] = sq;
+            C++;
+        }
+    }
+    int i = 0;
+    for (char c : chessBoard) {
+        short v;
+        switch (c) {
+            case 'e': v = e; break;
+            case 'P': v = P; break;
+            case 'N': v = N; break;
+            case 'B': v = B; break;
+            case 'R': v = R; break;
+            case 'Q': v = Q; break;
+            case 'K': v = K; break;
+            case 'p': v = p; break;
+            case 'n': v = n; break;
+            case 'b': v = b; break;
+            case 'r': v = r; break;
+            case 'q': v = q; break;
+            case 'k': v = k; break;
+            default : v = o; break;
+        }
+        brd->pieces[sq64sq120[squareNr[i]]] = v;
+        i++;
+    }
+
+    // Updating side to move
+    brd->side = (elements[1] == "w") ? 0 : 1;
+
+    // Updating hash key
+    brd->posKey = generateHash(brd);
 }
 
 
@@ -126,67 +195,6 @@ void clearBit(u64 &bitBoard, short sq){
     bitBoard &= clearMask[sq];
 }
 
-void FENBoardUpdater(Board *board, string fen) {
-    //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
-    //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
 
-    vector<string> elements(6);
-    int c = 0;
-    for (int i = 0; i<fen.size(); i++) {
-        if (fen[i] == ' ') {
-            c++;
-            continue;
-        }
-        elements[c] += fen[i];
-    }
-    for (string s : elements) {
-        cout << s << endl;
-    }
-
-    string chessBoard = "";
-    for (char c : elements[0]) {
-        if (c < 60) {
-            int empties = c - '0';
-            for (int i = 0; i<empties; i++) {
-                chessBoard += 'e';
-            }
-        } else if (c != '/') {
-            chessBoard += c;
-        }
-    }
-
-    int squareNr[64];
-    int C = 0;
-    for (int rank = 7; rank >= 0; rank--) {
-        for (int file = 0; file < 8; file++) {
-            int sq = (rank * 8 + file);
-            squareNr[C] = sq;
-            C++;
-        }
-    }
-    int i = 0;
-    for (char c : chessBoard) {
-        short v;
-        switch (c) {
-            case 'e': v = e; break;
-            case 'P': v = P; break;
-            case 'N': v = N; break;
-            case 'B': v = B; break;
-            case 'R': v = R; break;
-            case 'Q': v = Q; break;
-            case 'K': v = K; break;
-            case 'p': v = p; break;
-            case 'n': v = n; break;
-            case 'b': v = b; break;
-            case 'r': v = r; break;
-            case 'q': v = q; break;
-            case 'k': v = k; break;
-            default : v = o; break;
-        }
-        board->pieces[sq64sq120[squareNr[i]]] = v;
-        i++;
-    }
-    cout << chessBoard << endl << endl;
-}
 
 

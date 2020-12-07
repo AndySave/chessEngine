@@ -56,7 +56,7 @@ extern void clearBit(u64 &bitBoard, short sq);
 // Hashkey metoder
 extern u64 rand64();
 extern u64 generateHash(Board *brd);
-extern void FENBoardUpdater(Board *board, std::string fen);
+extern void FENBoardUpdater(Board *brd, std::string fen);
 
 // Inits
 extern void allInits(Board *brd);
