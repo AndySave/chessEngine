@@ -90,6 +90,10 @@ void FENBoardUpdater(Board *brd, string fen) {
     }
     brd->castlePerm = castlePerm;
 
+    brd->fiftyMove = elements[4][0] - '0';
+
+    brd->ply = elements[5][0] - '0';
+
     string chessBoard = "";
     for (char c : elements[0]) {
         if (c < 60) {
@@ -140,6 +144,9 @@ void FENBoardUpdater(Board *brd, string fen) {
 
     // Updating hash key
     brd->posKey = generateHash(brd);
+}
+int algebraicTo64(string square) {
+
 }
 
 
