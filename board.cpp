@@ -81,10 +81,10 @@ void FENBoardUpdater(Board *brd, string fen) {
     int castlePerm = 0;
     for (char c : elements[2]) {
         switch (c) {
-            case 'k': castlePerm | BKC; break;
-            case 'K': castlePerm | WKC; break;
-            case 'Q': castlePerm | WQC; break;
-            case 'q': castlePerm | BQC; break;
+            case 'k': castlePerm |= BKC; break;
+            case 'K': castlePerm |= WKC; break;
+            case 'Q': castlePerm |= WQC; break;
+            case 'q': castlePerm |= BQC; break;
             default : break;
         }
     }
@@ -131,8 +131,8 @@ void FENBoardUpdater(Board *brd, string fen) {
             case 'k': v = k; break;
             default : v = o; break;
         }
-        brd->pieces[sq64sq120[squareNr[castlePerm]]] = v;
-        castlePerm++;
+        brd->pieces[sq64sq120[squareNr[i]]] = v;
+        i++;
     }
 
     // Updating side to move
