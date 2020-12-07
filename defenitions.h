@@ -45,25 +45,30 @@ struct Board{
 extern int sq64(int sq);
 extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
-extern void resetBoard(Board *brd);
 
 
 // Bit board metoder
-extern void initBitBoard(Board *brd);
 extern void printBitBoard(u64 bitBoard);
-extern void initBitMasks();
 extern void setBit(u64 &bitBoard, short sq);
 extern void clearBit(u64 &bitBoard, short sq);
 
 
 // Hashkey metoder
 extern u64 rand64();
-extern void initHashkeys();
 extern u64 generateHash(Board *brd);
 extern void FENBoardUpdater(Board *board, std::string fen);
 
+// Inits
+extern void allInits(Board *brd);
+extern void resetBoard(Board *brd);
+extern void initBitMasks();
+extern void initBitBoard(Board *brd);
+extern void initHashkeys();
+
 
 enum sideToMove : short {white, black};
+enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
+
 
 
