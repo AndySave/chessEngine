@@ -154,66 +154,36 @@ void FENBoardUpdater(Board *board, string fen) {
             chessBoard += c;
         }
     }
-    string SSSSSS = "";
-    SSSSSS+= chessBoard.substr(56,8);
-    SSSSSS+= chessBoard.substr(48,8);
-    SSSSSS+= chessBoard.substr(40,8);
-    SSSSSS+= chessBoard.substr(32,8);
-    SSSSSS+= chessBoard.substr(24,8);
-    SSSSSS+= chessBoard.substr(16,8);
-    SSSSSS+= chessBoard.substr(8,8);
-    SSSSSS+= chessBoard.substr(0,8);
-    cout << SSSSSS.length() << endl;
 
-
+    int squareNr[64];
+    int C = 0;
+    for (int rank = 7; rank >= 0; rank--) {
+        for (int file = 0; file < 8; file++) {
+            int sq = (rank * 8 + file);
+            squareNr[C] = sq;
+            C++;
+        }
+    }
     int i = 0;
-    for (char c : SSSSSS) {
+    for (char c : chessBoard) {
         short v;
         switch (c) {
-            case 'e':
-                v = e;
-                break;
-            case 'P':
-                v = P;
-                break;
-            case 'N':
-                v = N;
-                break;
-            case 'B':
-                v = B;
-                break;
-            case 'R':
-                v = R;
-                break;
-            case 'Q':
-                v = Q;
-                break;
-            case 'K':
-                v = K;
-                break;
-            case 'p':
-                v = p;
-                break;
-            case 'n':
-                v = n;
-                break;
-            case 'b':
-                v = b;
-                break;
-            case 'r':
-                v = r;
-                break;
-            case 'q':
-                v = q;
-                break;
-            case 'k':
-                v = k;
-                break;
-            default:
-                v = o;
-                break;
+            case 'e': v = e; break;
+            case 'P': v = P; break;
+            case 'N': v = N; break;
+            case 'B': v = B; break;
+            case 'R': v = R; break;
+            case 'Q': v = Q; break;
+            case 'K': v = K; break;
+            case 'p': v = p; break;
+            case 'n': v = n; break;
+            case 'b': v = b; break;
+            case 'r': v = r; break;
+            case 'q': v = q; break;
+            case 'k': v = k; break;
+            default : v = o; break;
         }
-        board->pieces[sq64sq120[i]] = v;
+        board->pieces[sq64sq120[squareNr[i]]] = v;
         i++;
     }
     cout << chessBoard << endl << endl;
