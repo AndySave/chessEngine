@@ -3,7 +3,7 @@
 //TODO printBoard, 1 faktiske verdier, en med brikker (boolean for aa velge.)
 //TODO enum brikke til navn
 #include <bits/stdc++.h>
-#include "board.h"
+#include "defenitions.h"
 
 using namespace std;
 
