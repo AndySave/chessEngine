@@ -6,15 +6,11 @@ using namespace std;
 int main(){
     Board board{};
 
-    resetBoard(&board);
-    // printBoard120(&board);
-
-    board.pieces[21] = P;
-    board.pieces[25] = P;
-    board.pieces[36] = P;
-    board.pieces[98] = P;
+    resetBoard(&board);  // fungerer ogsaa som init
     initBitBoard(&board);
-    printBitBoard(board.pawns[0]);
+    initBitMasks();
+
 }
+
 
 

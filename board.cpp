@@ -86,3 +86,25 @@ void printBitBoard(u64 bitBoard){
     }
 }
 
+u64 setMask[64];
+u64 clearMask[64];
+void initBitMasks(){
+    for (u64 &i : setMask){
+        i = 0ULL;
+    }
+
+    for (int i = 0; i < 64; i++){
+        u64 b = 1ULL << i;
+        setMask[i] |= b;
+        clearMask[i] = ~setMask[i];
+    }
+}
+
+void setBit(u64 &bitBoard, short sq){
+    bitBoard |= setMask[sq];
+}
+
+void clearBit(u64 &bitBoard, short sq){
+    bitBoard &= clearMask[sq];
+}
+

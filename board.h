@@ -41,8 +41,14 @@ struct Board{
 // Board metoder
 extern void printBoard120(Board *brd);
 extern void resetBoard(Board *brd);
+
+
+// Bit board metoder
 extern void initBitBoard(Board *brd);
 extern void printBitBoard(u64 bitBoard);
+extern void initBitMasks();
+extern void setBit(u64 &bitBoard, short sq);
+extern void clearBit(u64 &bitBoard, short sq);
 
 
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
