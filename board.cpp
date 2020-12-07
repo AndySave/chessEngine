@@ -45,7 +45,7 @@ void printBoard120(Board *brd){
 
 void printBoard(Board *brd) {
     string pieceChars[13] = {".", "P", "N", "B", "R", "Q", "K",
-                                  "p", "n", "b", "r", "q", "k"};
+                             "p", "n", "b", "r", "q", "k"};
 
     for (int rank = 7; rank >= 0; rank--) {
         for (int file = 0; file < 8; file++) {
@@ -58,7 +58,15 @@ void printBoard(Board *brd) {
     }
     cout << "side: " << ((brd->side == 0) ? 'w' : 'b') << endl;
     cout << "enPas: " << brd->enPas << endl;
-    cout << "castle: " << brd->castlePerm << endl;
+
+    // Handling castling permissions
+    string cp;
+    if (brd->castlePerm & WKC) { cp += 'K';}
+    if (brd->castlePerm & WQC) { cp += 'Q';}
+    if (brd->castlePerm & BKC) { cp += 'k';}
+    if (brd->castlePerm & BQC) { cp += 'q';}
+    cout << "castle: " << (cp.empty() ? "-" : cp) << endl;
+
     cout << "key: " << brd->posKey << endl;
 }
 
@@ -209,7 +217,4 @@ void setBit(u64 &bitBoard, short sq){
 void clearBit(u64 &bitBoard, short sq){
     bitBoard &= clearMask[sq];
 }
-
-
-
 
