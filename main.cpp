@@ -7,6 +7,8 @@ typedef long long ll;
 int main(){
     Board board{};
 
+    resetBoard(&board);
     printBoard120(&board);
 }
+
 

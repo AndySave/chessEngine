@@ -37,8 +37,9 @@ struct Board{
 
 };
 
-// Board methods
+// Board metoder
 extern void printBoard120(Board *brd);
+extern void resetBoard(Board *brd);
 
 
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
