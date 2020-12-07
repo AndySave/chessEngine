@@ -88,6 +88,7 @@ void FENBoardUpdater(Board *brd, string fen) {
             default : break;
         }
     }
+
     brd->castlePerm = castlePerm;
 
     string chessBoard = "";
