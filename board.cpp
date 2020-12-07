@@ -40,6 +40,21 @@ void printBoard120(Board *brd){
     }
 }
 
+void printBoard(Board *brd, bool betterPieces) {
+    string pieceChars[13] = {".", "P", "N", "B", "R", "Q", "K",
+                                  "p", "n", "b", "r", "q", "k"};
+
+    for (int rank = 7; rank >= 0; rank--) {
+        for (int file = 0; file < 8; file++) {
+            cout << pieceChars[brd->pieces[sq64(rank*8 + file)]] << " ";
+
+            if ((file + 1) % 8 == 0){
+                cout << endl;
+            }
+        }
+    }
+}
+
 
 
 ///// BITBOARD FUNKSJONER \\\\\

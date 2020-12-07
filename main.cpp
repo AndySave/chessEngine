@@ -10,6 +10,9 @@ int main(){
     initBitBoard(&board);
     initBitMasks();
 
+    board.pieces[31] = P;
+    printBoard(&board, true);
+
 }
 
 

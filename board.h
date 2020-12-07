@@ -39,6 +39,7 @@ struct Board{
 };
 
 // Board metoder
+extern void printBoard(Board *brd, bool betterPieces);
 extern void printBoard120(Board *brd);
 extern void resetBoard(Board *brd);
 
