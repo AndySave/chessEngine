@@ -2,6 +2,7 @@
 typedef long long ll;
 typedef unsigned long long u64;
 
+
 // Undo move structure
 struct Undo{
     int move;
@@ -25,6 +26,8 @@ struct Board{
     int ply;
     int hisPly;
 
+    int castlePerm;
+
     u64 posKey;
 
     int pceNum[13];
@@ -39,7 +42,8 @@ struct Board{
 };
 
 // Board metoder
-extern void printBoard(Board *brd, bool betterPieces);
+extern int sq64(int sq);
+extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
 extern void resetBoard(Board *brd);
 
@@ -52,6 +56,13 @@ extern void setBit(u64 &bitBoard, short sq);
 extern void clearBit(u64 &bitBoard, short sq);
 
 
+// Hashkey metoder
+extern u64 rand64();
+extern void initHashkeys();
+extern u64 generateHash(Board *brd);
+
+
+enum sideToMove : short {white, black};
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
 
 

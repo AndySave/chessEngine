@@ -9,11 +9,11 @@ int main(){
     resetBoard(&board);  // fungerer ogsaa som init
     initBitBoard(&board);
     initBitMasks();
+    initHashkeys();
 
-    board.pieces[31] = P;
-    printBoard(&board, true);
+    printBoard(&board);
 
+    cout << generateHash(&board);
 }
-
 
 
