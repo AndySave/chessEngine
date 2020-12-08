@@ -19,26 +19,26 @@ struct Undo{
 // Board structure
 struct Board{
     int pieces[120];
-    u64 pawns[3];
+    u64 pawns[3]; // Bit 0/1: No pawn/pawn, Index 0,1,2 White Pawns/Black pawns/All pawns
 
-    int kingSq[2];
+    int kingSq[2]; //Where the white and black queen are located. (pos on 120 board).
 
-    int side;
-    int enPas;
-    int fiftyMove;
+    int side; //Current side to move
+    int enPas; //In the case of a en Passant square.
+    int fiftyMove; //Fifty move rule in chess.
     int material[2];
 
-    int ply;
+    int ply; //Number of halfmoves.
     int hisPly;
 
     int castlePerm;
 
-    u64 posKey;
+    u64 posKey; //Unique key corresponding to each unique position.
 
-    int pceNum[13];
-    int bigPce[3];
-    int majPce[3];
-    int minPce[3];
+    int pceNum[13]; //Stores the number of pieces on the board. Empty 0 -> Black King 12.
+    int bigPce[3]; //The number of big pieces (not pawn). Index 0,1,2 White Pawns/Black pawns/All pawns
+    int majorPce[3]; //The number of rooks/queens. Index 0,1,2 White Pawns/Black pawns/All pawns.
+    int minorPce[3]; //The number of bishops/knights. Index 0,1,2 White Pawns/Black pawns/All pawns.
 
     Undo history[2048];
 
