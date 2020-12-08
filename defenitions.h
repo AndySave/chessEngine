@@ -7,6 +7,30 @@ typedef unsigned long long u64;
 
 #define standardFen "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+#define fromsq(m) (m & 0x7F)
+#define tosq(m) ((m >> 7) & 0x7F)
+#define captured(m) ((m >> 14) & 0xF)
+#define promoted(m) ((m >> 20) & 0xF)
+
+#define epFlag(m) 0x40000
+#define pwnStartFlag(m) 0x80000
+#define castleFlag(m) 0x1000000
+
+#define captureFlag(m) 0x7C000
+#define promotedFlag(m) 0xF00000
+
+/// Move structure
+struct Move{
+    int move;
+    int score;
+};
+
+/// Movelist structure
+struct Movelist{
+    Move moves[256];
+    int count;
+};
+
 /// Undo move structure
 struct Undo{
     int move;
@@ -66,6 +90,9 @@ extern void clearBit(u64 &bitBoard, short sq);
 extern u64 rand64();
 extern u64 generateHash(Board *brd);
 extern void FENBoardUpdater(Board *brd, std::string fen=standardFen);
+
+/// Move metoder
+extern void printMove(int move);
 
 /// Inits
 extern void allInits(Board *brd);
