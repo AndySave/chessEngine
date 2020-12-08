@@ -7,7 +7,7 @@ typedef unsigned long long u64;
 
 #define standardFen "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-// Undo move structure
+/// Undo move structure
 struct Undo{
     int move;
     int castlePerm;
@@ -16,7 +16,7 @@ struct Undo{
     u64 posKey;
 };
 
-// Board structure
+/// Board structure
 struct Board{
     int pieces[120];
     u64 pawns[3]; // Bit 0/1: No pawn/pawn, Index 0,1,2 White Pawns/Black pawns/All pawns
@@ -46,27 +46,28 @@ struct Board{
 
 };
 
-// Board metoder
+/// Board metoder
 extern int sq64(int sq);
 extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
 extern int algebraicTo64(std::string square);
+extern string sq64ToAlgebraic(int sq);
 extern bool sqAttacked(int sq, int side, Board *brd);
 extern void printSqAttacked(int side, Board *brd);
 
 
-// Bit board metoder
+/// Bit board metoder
 extern void printBitBoard(u64 bitBoard);
 extern void setBit(u64 &bitBoard, short sq);
 extern void clearBit(u64 &bitBoard, short sq);
 
 
-// Hashkey metoder
+/// Hashkey metoder
 extern u64 rand64();
 extern u64 generateHash(Board *brd);
 extern void FENBoardUpdater(Board *brd, std::string fen=standardFen);
 
-// Inits
+/// Inits
 extern void allInits(Board *brd);
 extern void resetBoard(Board *brd);
 extern void initBitMasks();
@@ -79,10 +80,13 @@ enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
 
 extern const int pceMat[13];
 
-// Piece directions
+/// Piece directions
 extern const int NDir[8];
 extern const int RDir[4];
 extern const int BDir[4];
 extern const int KDir[8];
+
+///Test methods
+extern void sq64ToAlgebraicTEST();
 
 
