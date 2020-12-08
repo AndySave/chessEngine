@@ -89,13 +89,14 @@ void initBoardValues(Board *brd){
             brd->material[black] += pceMat[piece];
         }
 
+        // adding piece position to pieceList
+        brd->pieceList[piece][brd->pceNum[piece]] = sq64(sq);
         // incrementing number of pieces
         brd->pceNum[piece]++;
-        // TODO: find out how pieceList works and add pieces to it
 
         // saving pos of kings
-        if (piece == K) { brd->kingSq[0] = sq64(sq); }
-        if (piece == k) { brd->kingSq[1] = sq64(sq); }
+        if (piece == K) { brd->kingSq[white] = sq64(sq); }
+        if (piece == k) { brd->kingSq[black] = sq64(sq); }
 
         // adding pawns to bitboards
         if (piece == P){

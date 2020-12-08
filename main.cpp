@@ -15,7 +15,5 @@ int main(){
 
 
     printBoard(&board);
-    printSqAttacked(white, &board);
-
 }
 
