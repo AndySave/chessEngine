@@ -66,6 +66,8 @@ struct Board{
 
     Undo history[2048]; //Used to storing the history of the game.
 
+    //Tracks the position of pieces. 13: Pieces, 10: Max number of pieces for each type.
+    //Example of use: pieceList[whiteKnight ID][index not already occupied] = POSITION
     int pieceList[13][10];
 
 };
