@@ -29,7 +29,7 @@ void resetBoard(Board *brd){
         piece = o;
     }
     for (int i = 0; i < 64; i++){
-        brd->pieces[sq64(i)] = e;
+        (*brd).pieces[sq64(i)] = e;
     }
 }
 
@@ -49,7 +49,7 @@ void printBoard(Board *brd) {
 
     for (int rank = 7; rank >= 0; rank--) {
         for (int file = 0; file < 8; file++) {
-            cout << pieceChars[brd->pieces[sq64(rank*8 + file)]] << " ";
+            cout << pieceChars[(*brd).pieces[sq64(rank*8 + file)]] << " ";
 
             if ((file + 1) % 8 == 0){
                 cout << endl;
@@ -118,12 +118,12 @@ void FENBoardUpdater(Board *brd, string fen) {
 
     vector<string> elements(6);
     int c = 0;
-    for (int i = 0; i<fen.size(); i++) {
-        if (fen[i] == ' ') {
+    for (char i : fen) {
+        if (i == ' ') {
             c++;
             continue;
         }
-        elements[c] += fen[i];
+        elements[c] += i;
     }
     int castlePerm = 0;
     for (char c : elements[2]) {
@@ -141,6 +141,16 @@ void FENBoardUpdater(Board *brd, string fen) {
 
     brd->ply = elements[5][0] - '0';
 
+    brd->side = (elements[1] == "w") ? 0 : 1;
+
+    //Sets en Passant square.
+    if (elements[3][0] == '-') {
+        brd->enPas = 0;
+    } else {
+        brd->enPas = sq64(algebraicTo64(elements[3]));
+    }
+
+    //Sets the chessboard string used to set the chessboard.
     string chessBoard = "";
     for (char c : elements[0]) {
         if (c < 60) {
@@ -153,6 +163,7 @@ void FENBoardUpdater(Board *brd, string fen) {
         }
     }
 
+    //Sets the board to right integers.
     int squareNr[64];
     int C = 0;
     for (int rank = 7; rank >= 0; rank--) {
@@ -162,7 +173,6 @@ void FENBoardUpdater(Board *brd, string fen) {
             C++;
         }
     }
-    //w
     int i = 0;
     for (char c : chessBoard) {
         short v;
@@ -186,35 +196,29 @@ void FENBoardUpdater(Board *brd, string fen) {
         i++;
     }
 
-    // Updating side to move
-    brd->side = (elements[1] == "w") ? 0 : 1;
-
-    // Updating enPas sq
-    // TODO: fix
-
-    // Updating fiftyMove
-    // TODO: fix
-
-    // Update total moves
-    // TODO: fix
-
     // Updating hash key
     brd->posKey = generateHash(brd);
 
     // Updating board values
     initBoardValues(brd);
 }
+
 int algebraicTo64(string square) {
-    //a1 = 0
+    /* This function turns a square from algebraic to 64-board notation.
+     * Example: a1 --> 0
+     */
     int row = square[1] - '0';
     int col = square[0] - 96;
-    return (row-1)*8 + col - 1;
+    return (row-1) * 8 + col - 1;
 }
 
+//Hva er dette?
 const int NDir[8] = {-8, -19, -21, -12, 8, 19, 21, 12};
 const int RDir[4] = {-1, -10, 1, 10};
 const int BDir[4] = {-9, -11, 11, 9};
 const int KDir[8] = {-1, -10, 1, 10, -9, -11, 11, 9};
+
+
 bool sqAttacked(int sq, int side, Board *brd){
     int pce, tSq, dir;
     if (side == white){
