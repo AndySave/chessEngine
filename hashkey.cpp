@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+
 #include "defenitions.h"
 
 u64 rand64(){

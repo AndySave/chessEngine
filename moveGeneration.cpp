@@ -1,7 +1,5 @@
 
-#include <bits/stdc++.h>
 #include "defenitions.h"
-
 
 #define fromsq(m) (m & 0x7F)
 #define tosq(m) ((m >> 7) & 0x7F)
