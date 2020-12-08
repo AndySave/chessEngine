@@ -55,7 +55,7 @@ struct Board{
     int ply; //Number of halfmoves.
     int hisPly;
 
-    int castlePerm;
+    int castlePerm; // 0 0 0 0 --> BQCA BKCA WQCA WKCA, 0/1 : Al
 
     u64 posKey; //Unique key corresponding to each unique position.
 
@@ -64,7 +64,7 @@ struct Board{
     int majorPce[3]; //The number of rooks/queens. Index 0,1,2 White Pawns/Black pawns/All pawns.
     int minorPce[3]; //The number of bishops/knights. Index 0,1,2 White Pawns/Black pawns/All pawns.
 
-    Undo history[2048];
+    Undo history[2048]; //Used to storing the history of the game.
 
     int pieceList[13][10];
 
