@@ -74,8 +74,9 @@ void FENBoardUpdater(Board *brd, string fen) {
     //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
 
-    //enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
 
+    // Resetter brettet og legger til offboard squares
+    resetBoard(brd);
 
     vector<string> elements(6);
     int c = 0;
