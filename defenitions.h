@@ -49,6 +49,7 @@ extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
 extern int algebraicTo64(std::string square);
 extern bool sqAttacked(int sq, int side, Board *brd);
+extern void printSqAttacked(int side, Board *brd);
 
 
 // Bit board metoder

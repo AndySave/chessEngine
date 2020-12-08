@@ -226,7 +226,7 @@ bool sqAttacked(int sq, int side, Board *brd){
         // Checking knight directions
         for (int i : NDir){
             pce = brd->pieces[sq + i];
-            if (pce == K){
+            if (pce == N){
                 return true;
             }
         }
@@ -282,7 +282,7 @@ bool sqAttacked(int sq, int side, Board *brd){
         // Checking knight directions
         for (int i : NDir){
             pce = brd->pieces[sq + i];
-            if (pce == k){
+            if (pce == n){
                 return true;
             }
         }
@@ -330,6 +330,19 @@ bool sqAttacked(int sq, int side, Board *brd){
         }
     }
     return false;
+}
+
+void printSqAttacked(int side, Board *brd){
+    for (int rank = 7; rank >= 0; rank--){
+        for (int file = 0; file < 8; file++){
+            if (sqAttacked(sq64((rank*8)+file) ,side, brd)){
+                cout << "x ";
+            }else{
+                cout << "- ";
+            }
+        }
+        cout << endl;
+    }
 }
 
 ///// BITBOARD FUNKSJONER \\\\\
