@@ -70,6 +70,44 @@ void printBoard(Board *brd) {
     cout << "key: " << brd->posKey << endl;
 }
 
+const int pceMat[13] = {0, 100, 325, 325, 500, 1000, 60000, 100, 325, 325, 500, 1000, 60000};
+// Iterates through the board and sets different data: material, number of pieces, king sq, bitboard info
+void initBoardValues(Board *brd){
+    int piece;
+    for (short sq = 0; sq < 64; sq++) {
+        piece = brd->pieces[sq64(sq)];
+        if (piece == e){continue;}
+
+        // piece must be white if piece is <= K
+        if (piece <= K) {
+            brd->material[white] += pceMat[piece];
+        }else{
+            brd->material[black] += pceMat[piece];
+        }
+
+        // incrementing number of pieces
+        brd->pceNum[piece]++;
+        // TODO: find out how pieceList works and add pieces to it
+
+        // saving pos of kings
+        if (piece == K) { brd->kingSq[0] = sq64(sq); }
+        if (piece == k) { brd->kingSq[1] = sq64(sq); }
+
+        // adding pawns to bitboards
+        if (piece == P){
+            setBit(brd->pawns[white], sq);
+            setBit(brd->pawns[2], sq);
+        }else if (piece == p){
+            setBit(brd->pawns[black], sq);
+            setBit(brd->pawns[2], sq);
+        }
+
+    }
+
+}
+
+
+// Initializes the board
 void FENBoardUpdater(Board *brd, string fen) {
     //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
@@ -151,8 +189,20 @@ void FENBoardUpdater(Board *brd, string fen) {
     // Updating side to move
     brd->side = (elements[1] == "w") ? 0 : 1;
 
+    // Updating enPas sq
+    // TODO: fix
+
+    // Updating fiftyMove
+    // TODO: fix
+
+    // Update total moves
+    // TODO: fix
+
     // Updating hash key
     brd->posKey = generateHash(brd);
+
+    // Updating board values
+    initBoardValues(brd);
 }
 int algebraicTo64(string square) {
     //a1 = 0
@@ -161,32 +211,128 @@ int algebraicTo64(string square) {
     return (row-1)*8 + col - 1;
 }
 
-
-
-///// BITBOARD FUNKSJONER \\\\\
-
-// Finner boender og initialiserer bitBoard
-void initBitBoard(Board *brd){
-    u64 shiftVar = 1;
-    // wp = white pawns | bp = black pawns
-    u64 wp = 0;
-    u64 bp = 0;
-
-    for (int i = 0; i < 64; i++){
-        if (brd->pieces[sq64(i)] == P){
-            wp |= shiftVar << i;
+const int NDir[8] = {-8, -19, -21, -12, 8, 19, 21, 12};
+const int RDir[4] = {-1, -10, 1, 10};
+const int BDir[4] = {-9, -11, 11, 9};
+const int KDir[8] = {-1, -10, 1, 10, -9, -11, 11, 9};
+bool sqAttacked(int sq, int side, Board *brd){
+    int pce, tSq, dir;
+    if (side == white){
+        // Checking for pawns
+        if (brd->pieces[sq-11] == P || brd->pieces[sq-9] == P){
+            return true;
         }
-        else if (brd->pieces[sq64(i)] == p){
-            bp |= shiftVar << i;
+
+        // Checking knight directions
+        for (int i : NDir){
+            pce = brd->pieces[sq + i];
+            if (pce == K){
+                return true;
+            }
+        }
+
+        // Checking for rooks and queens
+        for (int i : RDir){
+            dir = i;
+            tSq = sq + dir;
+            pce = brd->pieces[tSq];
+            while (pce != o){
+                if (pce != e){
+                    if (pce == R || pce == Q){
+                        return true;
+                    }
+                    break;
+                }
+                tSq += dir;
+                pce = brd->pieces[tSq];
+            }
+        }
+
+        // Checking for bishops and queens
+        for (int i : BDir){
+            dir = i;
+            tSq = sq + dir;
+            pce = brd->pieces[tSq];
+            while (pce != o){
+                if (pce != e){
+                    if (pce == B || pce == Q){
+                        return true;
+                    }
+                    break;
+                }
+                tSq += dir;
+                pce = brd->pieces[tSq];
+            }
+        }
+
+        // Checking for king
+        for (int i : KDir){
+            pce = brd->pieces[sq + i];
+            if (pce == K){
+                return true;
+            }
+        }
+
+    }else{
+        // Checking for pawns
+        if (brd->pieces[sq+11] == p || brd->pieces[sq+9] == p){
+            return true;
+        }
+
+        // Checking knight directions
+        for (int i : NDir){
+            pce = brd->pieces[sq + i];
+            if (pce == k){
+                return true;
+            }
+        }
+
+        // Checking for rooks and queens
+        for (int i : RDir){
+            dir = i;
+            tSq = sq + dir;
+            pce = brd->pieces[tSq];
+            while (pce != o){
+                if (pce != e){
+                    if (pce == r || pce == q){
+                        return true;
+                    }
+                    break;
+                }
+                tSq += dir;
+                pce = brd->pieces[tSq];
+            }
+        }
+
+        // Checking for bishops and queens
+        for (int i : BDir){
+            dir = i;
+            tSq = sq + dir;
+            pce = brd->pieces[tSq];
+            while (pce != o){
+                if (pce != e){
+                    if (pce == b || pce == q){
+                        return true;
+                    }
+                    break;
+                }
+                tSq += dir;
+                pce = brd->pieces[tSq];
+            }
+        }
+
+        // Checking for king
+        for (int i : KDir){
+            pce = brd->pieces[sq + i];
+            if (pce == k){
+                return true;
+            }
         }
     }
-    // ap = all pawns
-    u64 ap = wp | bp;
-
-    brd->pawns[0] = wp;
-    brd->pawns[1] = bp;
-    brd->pawns[2] = ap;
+    return false;
 }
+
+///// BITBOARD FUNKSJONER \\\\\
 
 void printBitBoard(u64 bitBoard){
     u64 shiftVar = 1;

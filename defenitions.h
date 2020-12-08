@@ -2,6 +2,7 @@
 typedef long long ll;
 typedef unsigned long long u64;
 
+#define standardFen "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 // Undo move structure
 struct Undo{
@@ -22,6 +23,7 @@ struct Board{
     int side;
     int enPas;
     int fiftyMove;
+    int material[2];
 
     int ply;
     int hisPly;
@@ -46,6 +48,7 @@ extern int sq64(int sq);
 extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
 extern int algebraicTo64(std::string square);
+extern bool sqAttacked(int sq, int side, Board *brd);
 
 
 // Bit board metoder
@@ -57,13 +60,12 @@ extern void clearBit(u64 &bitBoard, short sq);
 // Hashkey metoder
 extern u64 rand64();
 extern u64 generateHash(Board *brd);
-extern void FENBoardUpdater(Board *brd, std::string fen);
+extern void FENBoardUpdater(Board *brd, std::string fen=standardFen);
 
 // Inits
 extern void allInits(Board *brd);
 extern void resetBoard(Board *brd);
 extern void initBitMasks();
-extern void initBitBoard(Board *brd);
 extern void initHashkeys();
 
 
@@ -71,5 +73,12 @@ enum sideToMove : short {white, black};
 enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
 
+extern const int pceMat[13];
+
+// Piece directions
+extern const int NDir[8];
+extern const int RDir[4];
+extern const int BDir[4];
+extern const int KDir[8];
 
 
