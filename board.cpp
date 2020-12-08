@@ -20,6 +20,10 @@ int sq64(int sq){
     return sq64sq120[sq];
 }
 
+int sq120(int sq){
+    return 8 * ((sq - 21) / 10) + sq % 10 - 1;
+}
+
 
 // Toemmer brettet
 // Viktig: Maa kalle denne funksjonen naar man initialiserer brettet for aa
