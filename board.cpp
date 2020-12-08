@@ -203,13 +203,36 @@ void FENBoardUpdater(Board *brd, string fen) {
     initBoardValues(brd);
 }
 
+/* This function converts a square from algebraic to 64-board notation.
+ * Example: a1 --> 0
+ */
 int algebraicTo64(string square) {
-    /* This function turns a square from algebraic to 64-board notation.
-     * Example: a1 --> 0
-     */
     int row = square[1] - '0';
     int col = square[0] - 96;
     return (row-1) * 8 + col - 1;
+}
+
+/* This function converts a 64-board notation into algebraic (like a4).
+ */
+
+string sq64ToAlgebraic(int sq) {
+    int r =  sq/8 + 1;
+    int col = sq % 8 + 1;
+    string column;
+    string row = to_string(r);
+
+    switch (col) {
+        case 1 : column = 'a'; break;
+        case 2 : column = 'b'; break;
+        case 3 : column = 'c'; break;
+        case 4 : column = 'd'; break;
+        case 5 : column = 'e'; break;
+        case 6 : column = 'f'; break;
+        case 7 : column = 'g'; break;
+        case 8 : column = 'h'; break;
+    }
+    string algebraic =  column + row;
+    return algebraic;
 }
 
 //Hva er dette?
@@ -348,6 +371,7 @@ void printSqAttacked(int side, Board *brd){
         cout << endl;
     }
 }
+
 
 ///// BITBOARD FUNKSJONER \\\\\
 
