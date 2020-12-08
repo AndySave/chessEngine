@@ -2,10 +2,7 @@
 //TODO 120sq til 64 sq brett
 //TODO printBoard, 1 faktiske verdier, en med brikker (boolean for aa velge.)
 //TODO enum brikke til navn
-#include <bits/stdc++.h>
 #include "defenitions.h"
-
-using namespace std;
 
 short sq64sq120[64] = {21, 22, 23, 24, 25, 26, 27, 28,
                        31, 32, 33, 34, 35, 36, 37, 38,
@@ -188,15 +185,6 @@ void FENBoardUpdater(Board *brd, string fen) {
 
     // Updating side to move
     brd->side = (elements[1] == "w") ? 0 : 1;
-
-    // Updating enPas sq
-    // TODO: fix
-
-    // Updating fiftyMove
-    // TODO: fix
-
-    // Update total moves
-    // TODO: fix
 
     // Updating hash key
     brd->posKey = generateHash(brd);
