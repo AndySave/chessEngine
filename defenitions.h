@@ -25,7 +25,7 @@ struct Move{
     int score;
 };
 
-/// Movelist structure
+/// Movelist structur
 struct Movelist{
     Move moves[256];
     int count;
