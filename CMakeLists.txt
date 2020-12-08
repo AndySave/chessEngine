@@ -9,4 +9,5 @@ add_executable(chessEngine
         board.cpp
         defenitions.h
         hashkey.cpp
+        moveGeneration.cpp
         main.cpp board.cpp)
