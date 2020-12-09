@@ -35,6 +35,20 @@ void resetBoard(Board *brd){
     for (int i = 0; i < 64; i++){
         (*brd).pieces[sq64(i)] = e;
     }
+
+    for (int i = 0; i < 3; i++){
+        brd->bigPce[i] = 0;
+        brd->majorPce[i] = 0;
+        brd->minorPce[i] = 0;
+        brd->material[i] = 0;
+        brd->pawns[i] = 0ULL;
+    }
+
+    for (int i = 0; i < 13; i++){
+        brd->pceNum[i] = 0;
+    }
+
+    brd->kingSq[0] = e; brd->kingSq[1] = e;
 }
 
 // Printer 120 brettets eksakte verdier
@@ -52,14 +66,13 @@ void printBoard(Board *brd) {
                              "p", "n", "b", "r", "q", "k"};
 
     for (int rank = 7; rank >= 0; rank--) {
+        cout << rank+1 << "   ";
         for (int file = 0; file < 8; file++) {
             cout << pieceChars[(*brd).pieces[sq64(rank*8 + file)]] << " ";
-
-            if ((file + 1) % 8 == 0){
-                cout << endl;
-            }
         }
+        cout << endl;
     }
+    cout << endl << "    a b c d e f g h" << endl;
     cout << "side: " << ((brd->side == 0) ? 'w' : 'b') << endl;
     cout << "enPas: " << brd->enPas << endl;
 
@@ -240,13 +253,11 @@ string sq64ToAlgebraic(int sq) {
     return algebraic;
 }
 
-//Hva er dette?
+// Piece directions
 const int NDir[8] = {-8, -19, -21, -12, 8, 19, 21, 12};
 const int RDir[4] = {-1, -10, 1, 10};
 const int BDir[4] = {-9, -11, 11, 9};
 const int KDir[8] = {-1, -10, 1, 10, -9, -11, 11, 9};
-
-
 bool sqAttacked(int sq, int side, Board *brd){
     int pce, tSq, dir;
     if (side == white){
@@ -420,4 +431,5 @@ void setBit(u64 &bitBoard, short sq){
 void clearBit(u64 &bitBoard, short sq){
     bitBoard &= clearMask[sq];
 }
+
 
