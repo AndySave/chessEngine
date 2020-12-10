@@ -14,9 +14,13 @@ void printMoveList(const Movelist *lst){
         move = lst->moves[i].move;
         score = lst->moves[i].score;
 
+        if (captureFlag & move){
+            cout << "C";
+        }
         cout << "Move #" << i+1 << ": ";
         printMove(move);
         cout << " Score: " << score << endl;
     }
     cout << "Total moves: " << lst->count;
 }
+
