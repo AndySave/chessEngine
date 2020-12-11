@@ -609,10 +609,17 @@ void parseMove(Board *brd, const string& moveStr){
     int flag = 0;
     if ((brd->pieces[from] == P && (from/10 - 1) == 2 && (to/10 - 1) == 4) ||
     (brd->pieces[from] == p && (from/10 - 1) == 7 && (to/10 - 1) == 5)){
-        flag = epFlag;
+        flag = pwnStartFlag;
     }
 
-    cout << from << " " << to << " " << cap << " " << prom << endl;
+    if ((brd->pieces[from] == K && from == 25 && (to == 27 || to == 23)) ||
+    (brd->pieces[from] == k && from == 95 && (to == 97 || to == 93))){
+        flag = castleFlag;
+    }
+
+    if ((brd->pieces[from] == P && to == brd->enPas) || (brd->pieces[from] == p && to == brd->enPas)){
+        flag = epFlag;
+    }
 
     makeMove(brd, move(from, to, cap, prom, flag));
 }
