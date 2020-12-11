@@ -76,5 +76,12 @@ int mainEval(Board *brd){
 }
 
 
+int sq120ColumnToTableColumn(int column) { // Not for the pawn table.
+    if (column < 4) {
+        return column;
+    }
+    return 7 - column;
+}
+
 
 
