@@ -16,5 +16,7 @@ int main(){
     printBoard(&board);
     generateLegalMoves(&board, &movelist);
     printMoveList(&movelist);
+
 }
+
 

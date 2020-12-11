@@ -1,6 +1,11 @@
 
 #include "defenitions.h"
 
+#define hashPce(pce, sq) (brd->posKey ^= pieceKeys[pce][sq])  // Note: sq has to be a sq64
+#define hashCa (brd->posKey ^= castleKeys[brd->castlePerm])
+#define hashSide (brd->posKey ^= sideKey)
+#define hashEp (brd->posKey ^= pieceKeys[e][brd->enPas])
+
 void printMove(int move){
     char promotPieces[13] = {' ', 'q', 'n', 'b', 'r', 'q', 'q',
                                   'q', 'n', 'b', 'r', 'q', 'q'};
@@ -13,25 +18,25 @@ int move(int from, int to, int capture, int promote, int flag){
     return (from | (to << 7) | (capture << 14) | (promote << 20) | flag);
 }
 
-void addQuietMove(const Board *brd, int move, Movelist *lst){
+static void addQuietMove(const Board *brd, int move, Movelist *lst){
     lst->moves[lst->count].move = move;
     lst->moves[lst->count].score = 0;
     lst->count++;
 }
 
-void addCaptureMove(const Board *brd, int move, Movelist *lst){
+static void addCaptureMove(const Board *brd, int move, Movelist *lst){
     lst->moves[lst->count].move = move;
     lst->moves[lst->count].score = 0;
     lst->count++;
 }
 
-void addEnPasMove(const Board *brd, int move, Movelist *lst){
+static void addEnPasMove(const Board *brd, int move, Movelist *lst){
     lst->moves[lst->count].move = move;
     lst->moves[lst->count].score = 0;
     lst->count++;
 }
 
-void addWhitePawnCaptureMove(const Board *brd, int from, int to, int cap, Movelist *lst){
+static void addWhitePawnCaptureMove(const Board *brd, int from, int to, int cap, Movelist *lst){
     if ((from/10) - 1 == 7){
         addCaptureMove(brd, move(from, to, cap, Q, 0), lst);
         addCaptureMove(brd, move(from, to, cap, R, 0), lst);
@@ -42,7 +47,7 @@ void addWhitePawnCaptureMove(const Board *brd, int from, int to, int cap, Moveli
     }
 }
 
-void addWhitePawnMove(const Board *brd, int from, int to, Movelist *lst){
+static void addWhitePawnMove(const Board *brd, int from, int to, Movelist *lst){
     if ((from/10) - 1 == 7){
         addQuietMove(brd, move(from, to, e, Q, 0), lst);
         addQuietMove(brd, move(from, to, e, R, 0), lst);
@@ -53,7 +58,7 @@ void addWhitePawnMove(const Board *brd, int from, int to, Movelist *lst){
     }
 }
 
-void addBlackPawnCaptureMove(const Board *brd, int from, int to, int cap, Movelist *lst){
+static void addBlackPawnCaptureMove(const Board *brd, int from, int to, int cap, Movelist *lst){
     if ((from/10) - 1 == 2){
         addCaptureMove(brd, move(from, to, cap, q, 0), lst);
         addCaptureMove(brd, move(from, to, cap, r, 0), lst);
@@ -64,7 +69,7 @@ void addBlackPawnCaptureMove(const Board *brd, int from, int to, int cap, Moveli
     }
 }
 
-void addBlackPawnMove(const Board *brd, int from, int to, Movelist *lst){
+static void addBlackPawnMove(const Board *brd, int from, int to, Movelist *lst){
     if ((from/10) - 1 == 2){
         addQuietMove(brd, move(from, to, e, q, 0), lst);
         addQuietMove(brd, move(from, to, e, r, 0), lst);
@@ -184,6 +189,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
         // Generating king side castling move
         if (brd->castlePerm & WKC){
             // 26 and 27 are the squares in between the king and rook
+            // TODO: Come back later as this might be slightly incorrect
             if (brd->pieces[26] == e && brd->pieces[27] == e){
                 if (!sqAttacked(26, black, brd) && !sqAttacked(27, black, brd)){
                     addQuietMove(brd, move(25, 27, e, e, castleFlag), lst);
@@ -317,3 +323,263 @@ void generateLegalMoves(Board *brd, Movelist *lst){
         }
     }
 }
+
+// Used to bitwise & the brd->castlePerm with every move using these values. This will remove castling permission
+// if any pieces move from or land on squares not numbered 15
+const int cPerm[120] ={
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 7, 15, 15, 15, 3, 15, 15, 11, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+};
+
+static void clearPiece(int sq, Board *brd){
+    int pce = brd->pieces[sq];
+    int col = pceCol[pce];
+
+    brd->pieces[sq] = e;  // Setting the sq on the board to empty
+    brd->material[col] -= pceMat[pce];  // Removing material
+
+    int index = 0;
+    for (int i = 0; i < brd->pceNum[pce]; i++){
+        if (brd->pieceList[pce][i] == sq){
+            index = i;
+            break;
+        }
+    }
+
+    brd->pceNum[pce]--;   // decrementing the pce from pceNum
+
+    brd->pieceList[pce][index] = brd->pieceList[pce][brd->pceNum[pce]];  // Replacing last element with deleted element
+
+
+    sq = sq120(sq);
+    hashPce(pce, sq);  // Hashing the piece out of the key
+
+    if (pce == P || pce == p){  // If the piece is a pawn, remove it from both bitboards
+        clearBit(brd->pawns[col], sq);
+        clearBit(brd->pawns[2], sq);
+    }
+
+
+}
+
+// Basically the same as clearPiece, except we add a piece.
+// Function also takes in pce to add as an argument
+static void addPiece(int sq, Board *brd, int pce){
+
+    int col = pceCol[pce];
+
+    brd->pieces[sq] = pce;  // Putting the piece on the board
+    brd->material[col] += pceMat[pce];  // Adding material
+
+    brd->pieceList[pce][brd->pceNum[pce]] = sq;  // Adding pce to the pieceList
+
+    brd->pceNum[pce]++;  // Incrementing the pce in pceNum
+
+    sq = sq120(sq);
+    hashPce(pce, sq);
+
+    if (pce == P || pce == p){
+        setBit(brd->pawns[col], sq);
+        setBit(brd->pawns[2], sq);
+    }
+}
+
+static void movePiece(const int from, const int to, Board *brd){
+
+    int pce = brd->pieces[from];
+    int col = pceCol[pce];
+
+    hashPce(pce, from);  // hashing the pce out of the key
+    hashPce(pce, to);  // hashing new sq in the key
+
+    brd->pieces[from] = e;  // Setting from sq to empty
+    brd->pieces[to] = pce;  // Setting to sq to pce
+
+    if (pce == P || pce == p){  // If pce is a pawn, update bitboards
+        clearBit(brd->pawns[col], sq120(from));
+        clearBit(brd->pawns[2], sq120(from));
+        setBit(brd->pawns[col], sq120(to));
+        setBit(brd->pawns[2], sq120(to));
+    }
+
+    for (int i = 0; i < brd->pceNum[pce]; i++){
+        if (brd->pieceList[pce][i] == from){
+            brd->pieceList[pce][i] = to;
+            break;
+        }
+    }
+}
+
+bool makeMove(Board *brd, int move){
+
+    int from = fromsq(move);
+    int to = tosq(move);
+    int side = brd->side;
+    int pce = brd->pieces[from];
+
+    brd->history[brd->hisPly].posKey = brd->posKey;  // Adding the posKey to the history array
+
+    if (move & epFlag){
+        if (side == white){
+            clearPiece(to-10, brd);
+        }else{
+            clearPiece(to+10, brd);
+        }
+    }else if (move & castleFlag){
+        if (to == 23){
+            movePiece(21, 24, brd);
+        }else if (to == 93){
+            movePiece(91, 94, brd);
+        }else if (to == 27){
+            movePiece(28, 26, brd);
+        }else{
+            movePiece(98, 96, brd);
+        }
+    }
+
+    if (brd->enPas == e){
+        hashEp;
+    }
+
+    // Hashing castlingPerm out of the key
+    hashCa;
+
+    // Storing data in the history array
+    brd->history[brd->hisPly].move = move;
+    brd->history[brd->hisPly].fiftyMove = brd->fiftyMove;
+    brd->history[brd->hisPly].enPas = brd->enPas;
+    brd->history[brd->hisPly].castlePerm = brd->castlePerm;
+
+    brd->castlePerm &= cPerm[from];
+    brd->castlePerm &= cPerm[to];
+    brd->enPas = e;
+
+    // Hashing new castlingPerms in the key
+    hashCa;
+
+    int cap = captured(move);
+    brd->fiftyMove++;
+
+    if (cap){
+        clearPiece(to, brd);
+        brd->fiftyMove = 0;
+    }
+
+    brd->hisPly++;
+    brd->ply++;
+
+    if (pce == P || pce == p){
+        brd->fiftyMove = 0;
+        if (move & pwnStartFlag){
+            if (side == white){
+                brd->enPas = from + 10;
+            }else{
+                brd->enPas = from - 10;
+            }
+            hashEp;
+        }
+    }
+
+    movePiece(from, to, brd);
+
+    int promPce = promoted(move);
+    if (promPce){
+        clearPiece(to, brd);
+        addPiece(to, brd, promPce);
+    }
+
+    if (pce == K || pce == k){
+        brd->kingSq[brd->side] = to;
+    }
+
+    brd->side ^= 1;
+    hashSide;
+
+    if (sqAttacked(brd->kingSq[side], brd->side, brd)){
+        undoMove(brd);
+        return false;
+    }
+    return true;
+}
+
+
+void undoMove(Board *brd){
+    // Code that has been commented out might be redundant
+    // TODO: Come back later and confirm
+
+    brd->hisPly--;
+    brd->ply--;
+
+    int move = brd->history[brd->hisPly].move;
+    int from = fromsq(move);
+    int to = tosq(move);
+    int pce = brd->pieces[to];
+
+    /*
+    if (brd->enPas == e){
+        hashEp;
+    }
+    hashCa;
+     */
+
+    brd->castlePerm = brd->history[brd->hisPly].castlePerm;
+    brd->fiftyMove = brd->history[brd->hisPly].fiftyMove;
+    brd->enPas = brd->history[brd->hisPly].enPas;
+    brd->posKey = brd->history[brd->hisPly].posKey;
+
+    /*
+    if (brd->enPas == e){
+        hashEp;
+    }
+    hashCa;
+     */
+
+    brd->side ^= 1;
+
+    // hashSide;
+
+    if (move & epFlag){
+        if (brd->side == white){
+            addPiece(to-10, brd, p);
+        }else{
+            addPiece(to+10, brd, P);
+        }
+    }else if (move & castleFlag){
+        if (to == 23){
+            movePiece(24, 21, brd);
+        }else if (to == 93){
+            movePiece(94, 91, brd);
+        }else if (to == 27){
+            movePiece(26, 28, brd);
+        }else{
+            movePiece(96, 98, brd);
+        }
+    }
+
+    movePiece(to, from, brd);
+
+    if (pce == K || pce == k){
+        brd->kingSq[brd->side] = from;
+    }
+
+    int cap = captured(move);
+    if (cap){
+        addPiece(to, brd, cap);
+    }
+
+    if (promoted(move)){
+        clearPiece(from, brd);
+        addPiece(from, brd, brd->side ? p : P);  // TODO: this might have to be changed
+    }
+}
+

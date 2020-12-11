@@ -49,3 +49,4 @@ u64 generateHash(Board *brd){
 
     return key;
 }
+

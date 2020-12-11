@@ -126,7 +126,7 @@ void initBoardValues(Board *brd){
 
 
 // Initializes the board
-void FENBoardUpdater(Board *brd, string fen) {
+void FENBoardUpdater(Board *brd, const string& fen) {
     //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
 
@@ -157,9 +157,9 @@ void FENBoardUpdater(Board *brd, string fen) {
 
     brd->fiftyMove = elements[4][0] - '0';
 
-    brd->ply = elements[5][0] - '0';
+    brd->hisPly = elements[5][0] - '0';
 
-    brd->side = (elements[1] == "w") ? 0 : 1;
+    brd->side = (elements[1] == "w") ? white : black;
 
     //Sets en Passant square.
     if (elements[3][0] == '-') {
@@ -424,11 +424,11 @@ void initBitMasks(){
     }
 }
 
-void setBit(u64 &bitBoard, short sq){
+void setBit(u64 &bitBoard, int sq){
     bitBoard |= setMask[sq];
 }
 
-void clearBit(u64 &bitBoard, short sq){
+void clearBit(u64 &bitBoard, int sq){
     bitBoard &= clearMask[sq];
 }
 
