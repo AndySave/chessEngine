@@ -11,4 +11,5 @@ add_executable(chessEngine
         hashkey.cpp
         moveGeneration.cpp
         perft.cpp
+        evaluation.cpp
         main.cpp board.cpp tests.cpp)

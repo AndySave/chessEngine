@@ -1,7 +1,7 @@
 
 #include "defenitions.h"
 
-void mainEval(Board *brd){
+int mainEval(Board *brd){
     int score = brd->material[white] - brd->material[black];
 
 

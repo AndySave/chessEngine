@@ -12,12 +12,12 @@ typedef unsigned long long u64;
 #define captured(m) ((m >> 14) & 0xF)
 #define promoted(m) ((m >> 20) & 0xF)
 
-#define epFlag(m) 0x40000
-#define pwnStartFlag(m) 0x80000
-#define castleFlag(m) 0x1000000
+#define epFlag 0x40000
+#define pwnStartFlag 0x80000
+#define castleFlag 0x1000000
 
-#define captureFlag(m) 0x7C000
-#define promotedFlag(m) 0xF00000
+#define captureFlag 0x7C000
+#define promotedFlag 0xF00000
 
 /// Move structure
 struct Move{
@@ -25,7 +25,7 @@ struct Move{
     int score;
 };
 
-/// Movelist structur
+/// Movelist structure
 struct Movelist{
     Move moves[256];
     int count;
@@ -74,6 +74,7 @@ struct Board{
 
 /// Board metoder
 extern int sq64(int sq);
+extern int sq120(int sq);
 extern void printBoard(Board *brd);
 extern void printBoard120(Board *brd);
 extern int algebraicTo64(std::string square);
@@ -84,23 +85,34 @@ extern void printSqAttacked(int side, Board *brd);
 
 /// Bit board metoder
 extern void printBitBoard(u64 bitBoard);
-extern void setBit(u64 &bitBoard, short sq);
-extern void clearBit(u64 &bitBoard, short sq);
+extern void setBit(u64 &bitBoard, int sq);
+extern void clearBit(u64 &bitBoard, int sq);
 
 
 /// Hashkey metoder
 extern u64 rand64();
 extern u64 generateHash(Board *brd);
-extern void FENBoardUpdater(Board *brd, std::string fen=standardFen);
+
+/// Hashkey containers
+extern u64 pieceKeys[13][64];
+extern u64 sideKey;
+extern u64 castleKeys[16];
 
 /// Move metoder
 extern void printMove(int move);
+extern void generateLegalMoves(Board *brd, Movelist *lst);
+extern bool makeMove(Board *brd, int move);
+extern void undoMove(Board *brd);
+
+/// Evalutaion metoder
+extern int mainEval(Board *brd);
 
 /// Inits
 extern void allInits(Board *brd);
 extern void resetBoard(Board *brd);
 extern void initBitMasks();
 extern void initHashkeys();
+extern void FENBoardUpdater(Board *brd, const std::string& fen=standardFen);
 
 
 enum sideToMove : short {white, black};
@@ -117,5 +129,10 @@ extern const int KDir[8];
 
 ///Test methods
 extern void sq64ToAlgebraicTEST();
+extern void printMoveList(const Movelist *lst);
+
+/// Perft test methods
+extern void perft(int depth, Board *brd);
+extern void perftTest(int depth, Board *brd);
 
 
