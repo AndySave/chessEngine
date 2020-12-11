@@ -9,7 +9,7 @@ int main(){
     initHashkeys();
 
     // andre inits
-    FENBoardUpdater(&board, "n1n5/PPPk4/8/8/8/8/4Kppp/5N1N b - - 0 1");
+    FENBoardUpdater(&board, standardFen);
 
     perftTest(6, &board);
 }

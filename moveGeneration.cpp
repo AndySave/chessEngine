@@ -513,9 +513,6 @@ bool makeMove(Board *brd, int move){
 
 
 void undoMove(Board *brd){
-    // Code that has been commented out might be redundant
-    // TODO: Come back later and confirm
-
     brd->hisPly--;
     brd->ply--;
 
@@ -524,27 +521,12 @@ void undoMove(Board *brd){
     int to = tosq(move);
     int pce = brd->pieces[to];
 
-    /*
-    if (brd->enPas == e){
-        hashEp;
-    }
-    hashCa;
-     */
-
+    // Changing values to previous values in the history array
     brd->castlePerm = brd->history[brd->hisPly].castlePerm;
     brd->fiftyMove = brd->history[brd->hisPly].fiftyMove;
     brd->enPas = brd->history[brd->hisPly].enPas;
 
-    /*
-    if (brd->enPas == e){
-        hashEp;
-    }
-    hashCa;
-     */
-
     brd->side ^= 1;
-
-    // hashSide;
 
     if (move & epFlag){
         if (brd->side == white){
@@ -580,6 +562,7 @@ void undoMove(Board *brd){
         addPiece(from, brd, brd->side ? p : P);  // TODO: this might have to be changed
     }
 
+    // Updating posKey here so the hashing in movePiece doesn't affect the key
     brd->posKey = brd->history[brd->hisPly].posKey;
 }
 
