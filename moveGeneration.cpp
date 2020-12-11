@@ -112,10 +112,10 @@ void generateLegalMoves(Board *brd, Movelist *lst){
             }
 
             if (sq+9 == brd->enPas){
-                addCaptureMove(brd, move(sq, sq+9, e, e, epFlag), lst);
+                addEnPasMove(brd, move(sq, sq+9, e, e, epFlag), lst);
             }
             if (sq+11 == brd->enPas){
-                addCaptureMove(brd, move(sq, sq+11, e, e, epFlag), lst);
+                addEnPasMove(brd, move(sq, sq+11, e, e, epFlag), lst);
             }
 
         }
@@ -189,9 +189,8 @@ void generateLegalMoves(Board *brd, Movelist *lst){
         // Generating king side castling move
         if (brd->castlePerm & WKC){
             // 26 and 27 are the squares in between the king and rook
-            // TODO: Come back later as this might be slightly incorrect
             if (brd->pieces[26] == e && brd->pieces[27] == e){
-                if (!sqAttacked(26, black, brd) && !sqAttacked(27, black, brd)){
+                if (!sqAttacked(26, black, brd) && !sqAttacked(25, black, brd)){
                     addQuietMove(brd, move(25, 27, e, e, castleFlag), lst);
                 }
             }
@@ -200,8 +199,8 @@ void generateLegalMoves(Board *brd, Movelist *lst){
         // Generating queen side castling move
         if (brd->castlePerm & WQC){
             // 23 and 24 are the squares in between the king and rook
-            if (brd->pieces[23] == e && brd->pieces[24] == e){
-                if (!sqAttacked(23, black, brd) && !sqAttacked(24, black, brd)){
+            if (brd->pieces[22] == e && brd->pieces[23] == e && brd->pieces[24] == e){
+                if (!sqAttacked(25, black, brd) && !sqAttacked(24, black, brd)){
                     addQuietMove(brd, move(25, 23, e, e, castleFlag), lst);
                 }
             }
@@ -229,10 +228,10 @@ void generateLegalMoves(Board *brd, Movelist *lst){
             }
 
             if (sq-9 == brd->enPas){
-                addCaptureMove(brd, move(sq, sq-9, e, e, epFlag), lst);
+                addEnPasMove(brd, move(sq, sq-9, e, e, epFlag), lst);
             }
             if (sq-11 == brd->enPas){
-                addCaptureMove(brd, move(sq, sq-11, e, e, epFlag), lst);
+                addEnPasMove(brd, move(sq, sq-11, e, e, epFlag), lst);
             }
         }
 
@@ -306,7 +305,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
         if (brd->castlePerm & BKC){
             // 26 and 27 are the squares in between the king and rook
             if (brd->pieces[96] == e && brd->pieces[97] == e){
-                if (!sqAttacked(96, white, brd) && !sqAttacked(97, white, brd)){
+                if (!sqAttacked(96, white, brd) && !sqAttacked(95, white, brd)){
                     addQuietMove(brd, move(95, 97, e, e, castleFlag), lst);
                 }
             }
@@ -315,8 +314,8 @@ void generateLegalMoves(Board *brd, Movelist *lst){
         // Generating queen side castling move
         if (brd->castlePerm & BQC){
             // 23 and 24 are the squares in between the king and rook
-            if (brd->pieces[93] == e && brd->pieces[94] == e){
-                if (!sqAttacked(93, white, brd) && !sqAttacked(94, white, brd)){
+            if (brd->pieces[92] == e && brd->pieces[93] == e && brd->pieces[94] == e){
+                if (!sqAttacked(95, white, brd) && !sqAttacked(94, white, brd)){
                     addQuietMove(brd, move(95, 93, e, e, castleFlag), lst);
                 }
             }
@@ -535,7 +534,6 @@ void undoMove(Board *brd){
     brd->castlePerm = brd->history[brd->hisPly].castlePerm;
     brd->fiftyMove = brd->history[brd->hisPly].fiftyMove;
     brd->enPas = brd->history[brd->hisPly].enPas;
-    brd->posKey = brd->history[brd->hisPly].posKey;
 
     /*
     if (brd->enPas == e){
@@ -581,5 +579,7 @@ void undoMove(Board *brd){
         clearPiece(from, brd);
         addPiece(from, brd, brd->side ? p : P);  // TODO: this might have to be changed
     }
+
+    brd->posKey = brd->history[brd->hisPly].posKey;
 }
 
