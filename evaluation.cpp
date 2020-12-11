@@ -87,7 +87,7 @@ const int* tables[64][2] = {nullptr, *pawnTable, *knightTable, *bishopTable, *ro
  * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
-int evaluatePieceTablesMidgame(Board *board, double multiplier) {
+static int evaluatePieceTablesMidgame(Board *board, double multiplier) {
     double evaluation = 0;
     for (int i = 1; i<13; i++) {
         for (int q = 0; q<board->pceNum[i]; q++) {
@@ -104,7 +104,7 @@ int evaluatePieceTablesMidgame(Board *board, double multiplier) {
  * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
-int evaluatePieceTablesEndgame(Board *board, double multiplier) {
+static int evaluatePieceTablesEndgame(Board *board, double multiplier) {
     double evaluation = 0;
     for (int i = 1; i<13; i++) {
         for (int q = 0; q<board->pceNum[i]; q++) {
