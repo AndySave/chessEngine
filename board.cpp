@@ -474,7 +474,7 @@ void setBit(u64 &bitBoard, int sq){
 }
 
 /**
- *
+ * Clears a bit to a 0
  * @param bitBoard u64 number representing the pawns
  * @param sq th sq64 you want to set
  */
