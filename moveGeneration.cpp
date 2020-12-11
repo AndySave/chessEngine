@@ -6,6 +6,10 @@
 #define hashSide (brd->posKey ^= sideKey)
 #define hashEp (brd->posKey ^= pieceKeys[e][brd->enPas])
 
+/**
+ * Prints a move in algebraic, i.e. a2a3
+ * @param move int 32
+ */
 void printMove(int move){
     char promotPieces[13] = {' ', 'q', 'n', 'b', 'r', 'q', 'q',
                                   'q', 'n', 'b', 'r', 'q', 'q'};

@@ -11,7 +11,7 @@ int main(){
     // andre inits
     FENBoardUpdater(&board, standardFen);
 
-    perftTest(7, &board);
+    perftTest(5, &board);
 }
 
 
