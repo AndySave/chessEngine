@@ -101,6 +101,7 @@ extern void printMove(int move);  // takes in a move (32 bit number) and prints 
 extern void generateLegalMoves(Board *brd, Movelist *lst);  // generates all legal moves for a position
 extern bool makeMove(Board *brd, int move);  // Makes the move and updates board info
 extern void undoMove(Board *brd);  // Takes the move back and reverts board info
+extern void parseMove(Board *brd, const string& move);
 
 /// Evalutaion metoder
 extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here

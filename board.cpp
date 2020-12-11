@@ -90,8 +90,6 @@ void printBoard(Board *brd) {
     cout << "key: " << brd->posKey << endl;
 }
 
-const int pceMat[13] = {0, 100, 325, 325, 500, 1000, 60000, 100, 325, 325, 500, 1000, 60000};
-
 /**
  * Iterates through the board and sets board information such as piece positions (in brd.pieces), sets material,
  * adding pieces to the pieceList, incrementing pieceNum for corresponding piece, position of the kings and adding

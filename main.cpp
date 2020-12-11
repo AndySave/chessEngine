@@ -12,6 +12,9 @@ int main(){
     FENBoardUpdater(&board, standardFen);
 
     perftTest(5, &board);
+
+    parseMove(&board, "a2a4");
+    printBoard(&board);
 }
 
 

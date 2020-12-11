@@ -582,3 +582,38 @@ bool isRepetition(Board *brd){
 }
 
 
+void parseMove(Board *brd, const string& moveStr){
+    int from = sq64(algebraicTo64(moveStr.substr(0, 2)));
+    int to = sq64(algebraicTo64(moveStr.substr(2, 2)));
+    int cap = brd->pieces[to];
+    int prom = 0;
+
+    if (moveStr.length() == 5){
+        prom = brd->side == white ? 0 : 6;
+        switch (moveStr[4]) {
+            case 'q':
+                prom += Q;
+                break;
+            case 'n':
+                prom += N;
+                break;
+            case 'b':
+                prom += B;
+                break;
+            default:
+                prom += R;
+                break;
+        }
+    }
+
+    int flag = 0;
+    if ((brd->pieces[from] == P && (from/10 - 1) == 2 && (to/10 - 1) == 4) ||
+    (brd->pieces[from] == p && (from/10 - 1) == 7 && (to/10 - 1) == 5)){
+        flag = epFlag;
+    }
+
+    cout << from << " " << to << " " << cap << " " << prom << endl;
+
+    makeMove(brd, move(from, to, cap, prom, flag));
+}
+
