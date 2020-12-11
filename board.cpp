@@ -35,9 +35,6 @@ void resetBoard(Board *brd){
     }
 
     for (int i = 0; i < 3; i++){
-        brd->bigPce[i] = 0;
-        brd->majorPce[i] = 0;
-        brd->minorPce[i] = 0;
         brd->material[i] = 0;
         brd->pawns[i] = 0ULL;
     }

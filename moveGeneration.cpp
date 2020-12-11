@@ -563,10 +563,22 @@ void undoMove(Board *brd){
 
     if (promoted(move)){
         clearPiece(from, brd);
-        addPiece(from, brd, brd->side ? p : P);  // TODO: this might have to be changed
+        addPiece(from, brd, brd->side ? p : P);
     }
 
     // Updating posKey here so the hashing in movePiece doesn't affect the key
     brd->posKey = brd->history[brd->hisPly].posKey;
 }
+
+
+// TODO: come back later and turn into set
+bool isRepetition(Board *brd){
+    for (int i = brd->hisPly - brd->fiftyMove; i < brd->hisPly-1; ++i){
+        if (brd->posKey == brd->history[i].posKey){
+            return true;
+        }
+    }
+    return false;
+}
+
 
