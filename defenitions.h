@@ -73,8 +73,8 @@ struct Board{
 };
 
 /// Board metoder
-extern int sq64(int sq);  // Converting a sq64 to sq 120
-extern int sq120(int sq);  // Converting a sq120 to sq 64
+extern int sq64(int sq);  // Converting a sq64 to sq120
+extern int sq120(int sq);  // Converting a sq120 to sq64
 extern void printBoard(Board *brd);  // printing the board to the console
 extern void printBoard120(Board *brd);  // printing the 120 board to the console
 extern int algebraicTo64(std::string square);  // turns a sq like a4 to 3

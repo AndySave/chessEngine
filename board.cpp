@@ -61,6 +61,11 @@ void printBoard120(Board *brd){
     }
 }
 
+/**
+ * Prints the 64 board with letters as pieces and additional information like side to move, enPas sq, castle rights,
+ * and hashKey
+ * @param brd
+ */
 void printBoard(Board *brd) {
     string pieceChars[13] = {".", "P", "N", "B", "R", "Q", "K",
                              "p", "n", "b", "r", "q", "k"};
@@ -88,7 +93,13 @@ void printBoard(Board *brd) {
 }
 
 const int pceMat[13] = {0, 100, 325, 325, 500, 1000, 60000, 100, 325, 325, 500, 1000, 60000};
-// Iterates through the board and sets different data: material, number of pieces, king sq, bitboard info
+
+/**
+ * Iterates through the board and sets board information such as piece positions (in brd.pieces), sets material,
+ * adding pieces to the pieceList, incrementing pieceNum for corresponding piece, position of the kings and adding
+ * the pawns to the bitboards
+ * @param brd
+ */
 void initBoardValues(Board *brd){
     int piece;
     for (short sq = 0; sq < 64; sq++) {
@@ -125,7 +136,11 @@ void initBoardValues(Board *brd){
 }
 
 
-// Initializes the board
+/**
+ *
+ * @param brd
+ * @param fen
+ */
 void FENBoardUpdater(Board *brd, const string& fen) {
     //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     //rnbqkbnr/pp2pppp/8/2p5/2pPP3/8/PPP2PPP/RNBQK1NR w KQkq - 0 4
@@ -258,6 +273,15 @@ const int NDir[8] = {-8, -19, -21, -12, 8, 19, 21, 12};
 const int RDir[4] = {-1, -10, 1, 10};
 const int BDir[4] = {-9, -11, 11, 9};
 const int KDir[8] = {-1, -10, 1, 10, -9, -11, 11, 9};
+
+/**
+ * Checks whether a sq120 is attacked by a side by checking for nearby kings and knights, checking for bishops and
+ * queens in the bishop direcitons and finally checking in the rook directions for rooks or queens
+ * @param sq the 120 sq you want to check
+ * @param side white/black
+ * @param brd pointer to board
+ * @return a bool, true if sq is attacked, false if sq is not attacked
+ */
 bool sqAttacked(int sq, int side, Board *brd){
     int pce, tSq, dir;
     if (side == white){
@@ -375,6 +399,12 @@ bool sqAttacked(int sq, int side, Board *brd){
     return false;
 }
 
+/**
+ * Iterates through the board and checks every sq, prints an "x" if sq is attacked by a piece and prints a "-" if the
+ * sq is not attacked. Prints the 64 version of the board asoffboard sq's are never attacked
+ * @param side white/black
+ * @param brd pointer to board
+ */
 void printSqAttacked(int side, Board *brd){
     for (int rank = 7; rank >= 0; rank--){
         for (int file = 0; file < 8; file++){
@@ -391,6 +421,10 @@ void printSqAttacked(int side, Board *brd){
 
 ///// BITBOARD FUNKSJONER \\\\\
 
+/**
+ * Iterates through the u64 number and prints an "x" if the bit is set and "-" otherwise
+ * @param bitBoard a u64 bit number representing the pawns on the board
+ */
 void printBitBoard(u64 bitBoard){
     u64 shiftVar = 1;
 
@@ -412,6 +446,12 @@ void printBitBoard(u64 bitBoard){
 
 u64 setMask[64];
 u64 clearMask[64];
+
+/**
+ * Initializes the bitMasks used to set and clear bits, i.e. to set the third bit you need this mask in binary: 100.
+ * Generating these masks every time you set a bit is time consuming and therefore we pre generate them so they can be
+ * used multiple times
+ */
 void initBitMasks(){
     for (u64 &i : setMask){
         i = 0ULL;
@@ -424,12 +464,23 @@ void initBitMasks(){
     }
 }
 
+/**
+ * Sets a bit to a 1
+ * @param bitBoard u64 number represetning the pawns
+ * @param sq the sq64 you want to set
+ */
 void setBit(u64 &bitBoard, int sq){
     bitBoard |= setMask[sq];
 }
 
+/**
+ *
+ * @param bitBoard u64 number representing the pawns
+ * @param sq th sq64 you want to set
+ */
 void clearBit(u64 &bitBoard, int sq){
     bitBoard &= clearMask[sq];
 }
+
 
 
