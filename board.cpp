@@ -25,9 +25,11 @@ int sq120(int sq){
 }
 
 
-// Toemmer brettet
-// Viktig: Maa kalle denne funksjonen naar man initialiserer brettet for aa
-// definere offboard rutene
+/**
+ * Resets the squares on the board. Essentially used as an initializer for the board.
+ * Very important to call this function on start
+ * @param brd
+ */
 void resetBoard(Board *brd){
     for (int & piece : brd->pieces){
         piece = o;
@@ -51,7 +53,10 @@ void resetBoard(Board *brd){
     brd->kingSq[0] = e; brd->kingSq[1] = e;
 }
 
-// Printer 120 brettets eksakte verdier
+/**
+ * Prints the 120 board and the actual values on the board.
+ * @param brd
+ */
 void printBoard120(Board *brd){
     for (int i = 0; i < 120; i++){
         cout << brd->pieces[i] << " ";
