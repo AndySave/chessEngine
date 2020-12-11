@@ -60,9 +60,6 @@ struct Board{
     u64 posKey; //Unique key corresponding to each unique position.
 
     int pceNum[13]; //Stores the number of pieces on the board. Empty 0 -> Black King 12.
-    int bigPce[3]; //The number of big pieces (not pawn). Index 0,1,2 White Pawns/Black pawns/All pawns
-    int majorPce[3]; //The number of rooks/queens. Index 0,1,2 White Pawns/Black pawns/All pawns.
-    int minorPce[3]; //The number of bishops/knights. Index 0,1,2 White Pawns/Black pawns/All pawns.
 
     Undo history[2048]; //Used to storing the history of the game.
 

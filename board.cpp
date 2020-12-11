@@ -1,7 +1,3 @@
-//TODO 120sq brett
-//TODO 120sq til 64 sq brett
-//TODO printBoard, 1 faktiske verdier, en med brikker (boolean for aa velge.)
-//TODO enum brikke til navn
 
 #include "defenitions.h"
 
@@ -39,9 +35,6 @@ void resetBoard(Board *brd){
     }
 
     for (int i = 0; i < 3; i++){
-        brd->bigPce[i] = 0;
-        brd->majorPce[i] = 0;
-        brd->minorPce[i] = 0;
         brd->material[i] = 0;
         brd->pawns[i] = 0ULL;
     }
@@ -67,7 +60,7 @@ void printBoard120(Board *brd){
 }
 
 /**
- * Prints the 64 board with letters as pieces and additional information like side to move, enPas sq, castle rights,
+ * Prints the 64 board with letters as pieces and additional information such as side to move, enPas sq, castle rights,
  * and hashKey
  * @param brd
  */
@@ -406,7 +399,7 @@ bool sqAttacked(int sq, int side, Board *brd){
 
 /**
  * Iterates through the board and checks every sq, prints an "x" if sq is attacked by a piece and prints a "-" if the
- * sq is not attacked. Prints the 64 version of the board asoffboard sq's are never attacked
+ * sq is not attacked. Prints the 64 version of the board, as offboard sq's are never attacked
  * @param side white/black
  * @param brd pointer to board
  */
@@ -471,7 +464,7 @@ void initBitMasks(){
 
 /**
  * Sets a bit to a 1
- * @param bitBoard u64 number represetning the pawns
+ * @param bitBoard u64 number representing the pawns
  * @param sq the sq64 you want to set
  */
 void setBit(u64 &bitBoard, int sq){
@@ -486,6 +479,7 @@ void setBit(u64 &bitBoard, int sq){
 void clearBit(u64 &bitBoard, int sq){
     bitBoard &= clearMask[sq];
 }
+
 
 
 

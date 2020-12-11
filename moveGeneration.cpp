@@ -6,6 +6,10 @@
 #define hashSide (brd->posKey ^= sideKey)
 #define hashEp (brd->posKey ^= pieceKeys[e][brd->enPas])
 
+/**
+ * Prints a move in algebraic, i.e. a2a3
+ * @param move int 32
+ */
 void printMove(int move){
     char promotPieces[13] = {' ', 'q', 'n', 'b', 'r', 'q', 'q',
                                   'q', 'n', 'b', 'r', 'q', 'q'};
@@ -559,10 +563,22 @@ void undoMove(Board *brd){
 
     if (promoted(move)){
         clearPiece(from, brd);
-        addPiece(from, brd, brd->side ? p : P);  // TODO: this might have to be changed
+        addPiece(from, brd, brd->side ? p : P);
     }
 
     // Updating posKey here so the hashing in movePiece doesn't affect the key
     brd->posKey = brd->history[brd->hisPly].posKey;
 }
+
+
+// TODO: come back later and turn into set
+bool isRepetition(Board *brd){
+    for (int i = brd->hisPly - brd->fiftyMove; i < brd->hisPly-1; ++i){
+        if (brd->posKey == brd->history[i].posKey){
+            return true;
+        }
+    }
+    return false;
+}
+
 
