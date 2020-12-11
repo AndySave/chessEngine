@@ -73,55 +73,51 @@ struct Board{
 };
 
 /// Board metoder
-extern int sq64(int sq);
-extern int sq120(int sq);
-extern void printBoard(Board *brd);
-extern void printBoard120(Board *brd);
-extern int algebraicTo64(std::string square);
-extern string sq64ToAlgebraic(int sq);
-extern bool sqAttacked(int sq, int side, Board *brd);
-extern void printSqAttacked(int side, Board *brd);
+extern int sq64(int sq);  // Converting a sq64 to sq 120
+extern int sq120(int sq);  // Converting a sq120 to sq 64
+extern void printBoard(Board *brd);  // printing the board to the console
+extern void printBoard120(Board *brd);  // printing the 120 board to the console
+extern int algebraicTo64(std::string square);  // turns a sq like a4 to 3
+extern string sq64ToAlgebraic(int sq);  // turns a sq like 3 to a4
+extern bool sqAttacked(int sq, int side, Board *brd);  // return true if a sq is attacked by a side
+extern void printSqAttacked(int side, Board *brd);  // prints all sq's that are attacked by a side
 
 
 /// Bit board metoder
-extern void printBitBoard(u64 bitBoard);
-extern void setBit(u64 &bitBoard, int sq);
-extern void clearBit(u64 &bitBoard, int sq);
+extern void printBitBoard(u64 bitBoard);  // prints the bitBoard to the console
+extern void setBit(u64 &bitBoard, int sq);  // sets a specific bit in the bitboard to 1
+extern void clearBit(u64 &bitBoard, int sq);  // sets a specific bit in the bitboard to 0
 
 
 /// Hashkey metoder
-extern u64 rand64();
-extern u64 generateHash(Board *brd);
+extern u64 rand64();  // generates a random 64 bit number
+extern u64 generateHash(Board *brd);    // Generates a unique key for a position. Only run once when board is init
 
 /// Hashkey containers
+// These arrays store random numbers used to generate the key and update the key
 extern u64 pieceKeys[13][64];
 extern u64 sideKey;
 extern u64 castleKeys[16];
 
 /// Move metoder
-extern void printMove(int move);
-extern void generateLegalMoves(Board *brd, Movelist *lst);
-extern bool makeMove(Board *brd, int move);
-extern void undoMove(Board *brd);
+extern void printMove(int move);  // takes in a move (32 bit number) and prints it in this format: a2a3
+extern void generateLegalMoves(Board *brd, Movelist *lst);  // generates all legal moves for a position
+extern bool makeMove(Board *brd, int move);  // Makes the move and updates board info
+extern void undoMove(Board *brd);  // Takes the move back and reverts board info
 
 /// Evalutaion metoder
-extern int mainEval(Board *brd);
+extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here
 
 /// Inits
+// This isn't really used yet
 extern void allInits(Board *brd);
 extern void resetBoard(Board *brd);
 extern void initBitMasks();
 extern void initHashkeys();
 extern void FENBoardUpdater(Board *brd, const std::string& fen=standardFen);
 
-
-enum sideToMove : short {white, black};
-enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
-enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
-
-extern const int pceMat[13];
-
 /// Piece directions
+// initializing piece direction arrays
 extern const int NDir[8];
 extern const int RDir[4];
 extern const int BDir[4];
@@ -129,10 +125,16 @@ extern const int KDir[8];
 
 ///Test methods
 extern void sq64ToAlgebraicTEST();
-extern void printMoveList(const Movelist *lst);
+extern void printMoveList(const Movelist *lst);  // Prints every move in the movelist
 
 /// Perft test methods
-extern void perft(int depth, Board *brd);
-extern void perftTest(int depth, Board *brd);
+extern void perft(int depth, Board *brd);  // Used in perftTest
+extern void perftTest(int depth, Board *brd);  // Finds out how many positions you can reach from a position to a depth
 
+
+enum sideToMove : short {white, black};
+enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
+enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
+
+extern const int pceMat[13];
 
