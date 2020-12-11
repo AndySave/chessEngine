@@ -77,7 +77,7 @@ const int pawnTable[64][2] {
 };
 
 
-const int* tables[64][2] = {nullptr, *pawnTable, *knightTable, *bishopTable, *rookTable, *queenTable, *kingTable,
+const int* tables[64][2][13] = {nullptr, *pawnTable, *knightTable, *bishopTable, *rookTable, *queenTable, *kingTable,
                        *pawnTable, *knightTable, *bishopTable, *rookTable, *queenTable, *kingTable};
 
 
@@ -87,11 +87,11 @@ const int* tables[64][2] = {nullptr, *pawnTable, *knightTable, *bishopTable, *ro
  * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
-static int evaluatePieceTablesMidgame(Board *board, double multiplier) {
+int evaluatePieceTablesMidgame(Board *board, double multiplier) {
     double evaluation = 0;
     for (int i = 1; i<13; i++) {
         for (int q = 0; q<board->pceNum[i]; q++) {
-            evaluation += tables[i][sq120(board->pieceList[i][q])][0];
+            evaluation += (double) (*tables[i])[sq120(board->pieceList[i][q])][0];
         }
     }
     evaluation *= multiplier;
@@ -104,11 +104,11 @@ static int evaluatePieceTablesMidgame(Board *board, double multiplier) {
  * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
-static int evaluatePieceTablesEndgame(Board *board, double multiplier) {
+int evaluatePieceTablesEndgame(Board *board, double multiplier) {
     double evaluation = 0;
     for (int i = 1; i<13; i++) {
         for (int q = 0; q<board->pceNum[i]; q++) {
-            evaluation += tables[i][sq120(board->pieceList[i][q])][1];
+            evaluation += (double) (*tables[i])[sq120(board->pieceList[i][q])][1];
         }
     }
     evaluation *= multiplier;
