@@ -1,5 +1,18 @@
 #include "defenitions.h"
 
+const int pceMat[13] = {0, 100, 325, 325, 500, 1000, 60000, 100, 325, 325, 500, 1000, 60000};
+
+const int Mirror64[64] = {
+        56	,	57	,	58	,	59	,	60	,	61	,	62	,	63	,
+        48	,	49	,	50	,	51	,	52	,	53	,	54	,	55	,
+        40	,	41	,	42	,	43	,	44	,	45	,	46	,	47	,
+        32	,	33	,	34	,	35	,	36	,	37	,	38	,	39	,
+        24	,	25	,	26	,	27	,	28	,	29	,	30	,	31	,
+        16	,	17	,	18	,	19	,	20	,	21	,	22	,	23	,
+        8	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,
+        0	,	1	,	2	,	3	,	4	,	5	,	6	,	7
+};
+
 const int kingTable[64][2] = {
  {271,  1}, {327, 45}, {271, 85}, {198, 76}, {198, 76}, {271, 85}, {327, 45}, {271,  1}
 ,{278, 53}, {303,100}, {234,133}, {179,135}, {179,135}, {234,133}, {303,100}, {278, 53}
@@ -53,7 +66,7 @@ const int knightTable[64][2]{
 ,{-201, -100}, {-83, -88}, {-56, -56}, {-26, -17}, {-26, -17}, {-56, -56}, {-83, -88}, {-201, -100}
 };
 
-const int pawnTable[56][2] {
+const int pawnTable[64][2] {
  {0, 0}, {0 , 0}, {0, 0}, {0 , 0}, {0, 0}, {0 , 0}, {0, 0}, {0 , 0}
 ,{3,  -10}, {3,    -6}, {10,  10}, {19,   0}, {16,  14}, {19,   7}, {7,   -5}, {-5, -19}
 ,{-9, -10}, {-15, -10}, {11, -10}, {15,   4}, {32,   4}, {22,   3}, {5,   -6}, {-22, -4}
@@ -64,16 +77,54 @@ const int pawnTable[56][2] {
 };
 
 
+const int* tables[64][2] = {nullptr, *pawnTable, *knightTable, *bishopTable, *rookTable, *queenTable, *kingTable,
+                       *pawnTable, *knightTable, *bishopTable, *rookTable, *queenTable, *kingTable};
+
+
+/**
+ * Evaluates position based on the tables for each piece.
+ * @param board Main board
+ * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
+ * @return Evaluated value multiplied with midgame/endgame multiplier.
+ */
+int evaluatePieceTablesMidgame(Board *board, double multiplier) {
+    double evaluation = 0;
+    for (int i = 1; i<13; i++) {
+        for (int q = 0; q<board->pceNum[i]; q++) {
+            evaluation += tables[i][sq120(board->pieceList[i][q])][0];
+        }
+    }
+    evaluation *= multiplier;
+    return (int) evaluation;
+}
+
+/**
+ * Evaluates position based on the tables for each piece.
+ * @param board Main board
+ * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
+ * @return Evaluated value multiplied with midgame/endgame multiplier.
+ */
+int evaluatePieceTablesEndgame(Board *board, double multiplier) {
+    double evaluation = 0;
+    for (int i = 1; i<13; i++) {
+        for (int q = 0; q<board->pceNum[i]; q++) {
+            evaluation += tables[i][sq120(board->pieceList[i][q])][1];
+        }
+    }
+    evaluation *= multiplier;
+    return (int) evaluation;
+}
 
 
 
 int mainEval(Board *brd){
     int score = brd->material[white] - brd->material[black];
+    double midGameMultiplier = 0;
+    double endGameMultiplier = 1 - midGameMultiplier;
+    score += evaluatePieceTablesMidgame(brd, midGameMultiplier);
+    score += evaluatePieceTablesEndgame(brd, endGameMultiplier);
     if (brd->side == white){
         return score;
     }
     return -score;
 }
-
-
-
