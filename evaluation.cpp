@@ -154,6 +154,7 @@ const int allTables[13][64][3] = {
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
 
+//TODO: multipler is int when should be double
 int evalPieceTables(Board *brd){
     int evaluation = 0;
     for (int i = 1; i<7; i++) {
@@ -185,3 +186,4 @@ int mainEval(Board *brd){
     }
     return -score;
 }
+
