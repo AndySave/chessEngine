@@ -51,6 +51,7 @@ void searchPosition(Board *brd, int maxDepth){
     int bestMove = 0;
     int bestScore = -100000;
     int score;
+    bool legal = false;
 
     /*
     for (int currDepth = 0; currDepth < maxDepth; currDepth++){
@@ -65,6 +66,7 @@ void searchPosition(Board *brd, int maxDepth){
         if (!makeMove(brd, lst->moves[moveNum].move)){
             continue;
         }
+        legal = true;
 
         score = max(bestScore, -negaMax(-100000, 100000, maxDepth - 1, brd));
         undoMove(brd);
@@ -72,6 +74,14 @@ void searchPosition(Board *brd, int maxDepth){
         if (score > bestScore){
             bestMove = lst->moves[moveNum].move;
             bestScore = score;
+        }
+    }
+
+    if (!legal){
+        if (sqAttacked(brd->kingSq[brd->side], brd->side^1, brd)){
+            cout << "CHECKMATE" << endl;
+        }else{
+            cout << "STALEMATE" << endl;
         }
     }
 

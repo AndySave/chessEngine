@@ -174,8 +174,12 @@ static int evalPieceTables(Board *brd){
 }
 
 
-
+int totMat = 19004;  // Total material from beginning (excluding kings)
 int mainEval(Board *brd){
+
+    brd->midMultiplier = (brd->material[white] + brd->material[black] - 120000) / 19004.0;
+    brd->endMultiplier = 1 - brd->midMultiplier;
+
     int score = brd->material[white] - brd->material[black];
 
     score += evalPieceTables(brd);
