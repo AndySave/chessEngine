@@ -67,6 +67,9 @@ struct Board{
     //Example of use: pieceList[whiteKnight ID][index not already occupied] = POSITION
     int pieceList[13][10];
 
+    double midMultiplier = 1;
+    double endMultiplier = 0;
+
 };
 
 /// Board metoder

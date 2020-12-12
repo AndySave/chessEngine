@@ -13,7 +13,7 @@ const int Mirror64[64] = {
         0	,	1	,	2	,	3	,	4	,	5	,	6	,	7
 };
 //enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
-int allTables[13][64][3] = {
+const int allTables[13][64][3] = {
         {//Pawn
                 {0, 0}, {0 , 0}, {0, 0}, {0 , 0}, {0, 0}, {0 , 0}, {0, 0}, {0 , 0}
                 ,{3,  -10}, {3,    -6}, {10,  10}, {19,   0}, {16,  14}, {19,   7}, {7,   -5}, {-5, -19}
@@ -153,42 +153,35 @@ int allTables[13][64][3] = {
  * @param game Midgame/Endgame : 0/1
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
-int evaluatePieceTablesWhite(Board *board, double multiplier, int game) {
-    double evaluation = 0;
-    for (int i = 1; i<13; i++) {
-        for (int q = 0; q<board->pceNum[i]; q++) {
-            evaluation += allTables[i][sq120(board->pieceList[i][q])][game];
+
+int evalPieceTables(Board *brd){
+    int evaluation = 0;
+    for (int i = 1; i<7; i++) {
+        for (int q = 0; q<brd->pceNum[i]; q++) {
+                evaluation += allTables[i][sq120(brd->pieceList[i][q])][0] * brd->midMultiplier;
+                evaluation += allTables[i][sq120(brd->pieceList[i][q])][1] * brd->endMultiplier;
         }
     }
-    evaluation *= multiplier;
-    return (int) evaluation;
-}
-
-int evaluatePieceTablesBlack(Board *board, double multiplier, int game) {
-    double evaluation = 0;
-    for (int i = 1; i<13; i++) {
-        for (int q = 0; q<board->pceNum[i]; q++) {
-            evaluation += allTables[i][sq120(Mirror64[board->pieceList[i][q]])][game];
+    cout << endl;
+    for (int i = 7; i<13; i++) {
+        for (int q = 0; q<brd->pceNum[i]; q++) {
+            evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][0] * brd->midMultiplier;
+            evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][1] * brd->endMultiplier;
         }
     }
-    evaluation *= multiplier;
-    return (int) evaluation;
+    return evaluation;
 }
-
 
 
 
 int mainEval(Board *brd){
     int score = brd->material[white] - brd->material[black];
-    double midGameMultiplier = 0;
-    double endGameMultiplier = 1 - midGameMultiplier;
+
+    score += evalPieceTables(brd);
+
+
     if (brd->side == white){
-        score += evaluatePieceTablesWhite(brd, midGameMultiplier, 0);
-        score += evaluatePieceTablesWhite(brd, endGameMultiplier, 1);
         return score;
-    } else {
-        score += evaluatePieceTablesBlack(brd, midGameMultiplier, 0);
-        score += evaluatePieceTablesBlack(brd, endGameMultiplier, 1);
-        return -score;
     }
+    return -score;
 }

@@ -11,9 +11,8 @@ int main(){
     // andre inits
     FENBoardUpdater(&board, standardFen);
 
-    //perftTest(5, &board);
+    perftTest(5, &board);
 
-    cout << mainEval(&board);
 }
 
 
