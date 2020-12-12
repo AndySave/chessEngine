@@ -50,7 +50,7 @@ struct Board{
     int side; //Current side to move
     int enPas; //In the case of a en Passant square.
     int fiftyMove; //Fifty move rule in chess.
-    int material[2];
+    int material[2];  // Material
 
     int ply; //Number of halfmoves.
     int hisPly;
@@ -105,6 +105,10 @@ extern void generateLegalMoves(Board *brd, Movelist *lst);  // generates all leg
 extern bool makeMove(Board *brd, int move);  // Makes the move and updates board info
 extern void undoMove(Board *brd);  // Takes the move back and reverts board info
 extern void parseMove(Board *brd, const string& move);
+extern bool isRepetition(Board *brd);
+
+/// Search metoder
+extern void searchPosition(Board *brd, int maxDepth);
 
 /// Evalutaion metoder
 extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here

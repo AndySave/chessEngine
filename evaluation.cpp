@@ -1,6 +1,6 @@
 #include "defenitions.h"
 
-const int pceMat[13] = {0, 100, 325, 325, 500, 1000, 60000, 100, 325, 325, 500, 1000, 60000};
+const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
 
 const int Mirror64[64] = {
         56	,	57	,	58	,	59	,	60	,	61	,	62	,	63	,
@@ -12,7 +12,7 @@ const int Mirror64[64] = {
         8	,	9	,	10	,	11	,	12	,	13	,	14	,	15	,
         0	,	1	,	2	,	3	,	4	,	5	,	6	,	7
 };
-//enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
+
 const int allTables[13][64][3] = {
         {//Pawn
                 {0, 0}, {0 , 0}, {0, 0}, {0 , 0}, {0, 0}, {0 , 0}, {0, 0}, {0 , 0}
@@ -154,22 +154,22 @@ const int allTables[13][64][3] = {
  * @return Evaluated value multiplied with midgame/endgame multiplier.
  */
 
-//TODO: multipler is int when should be double
-int evalPieceTables(Board *brd){
+
+static int evalPieceTables(Board *brd){
     int evaluation = 0;
     for (int i = 1; i<7; i++) {
         for (int q = 0; q<brd->pceNum[i]; q++) {
-                evaluation += allTables[i][sq120(brd->pieceList[i][q])][0] * brd->midMultiplier;
-                evaluation += allTables[i][sq120(brd->pieceList[i][q])][1] * brd->endMultiplier;
+            evaluation += allTables[i][sq120(brd->pieceList[i][q])][0] * brd->midMultiplier;
+            evaluation += allTables[i][sq120(brd->pieceList[i][q])][1] * brd->endMultiplier;
         }
     }
-    cout << endl;
     for (int i = 7; i<13; i++) {
         for (int q = 0; q<brd->pceNum[i]; q++) {
             evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][0] * brd->midMultiplier;
             evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][1] * brd->endMultiplier;
         }
     }
+
     return evaluation;
 }
 

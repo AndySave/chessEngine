@@ -20,8 +20,6 @@ void perft(int depth, Board *brd){
         perft(depth - 1, brd);
         undoMove(brd);
     }
-
-    return;
 }
 
 void perftTest(int depth, Board *brd){
@@ -48,8 +46,6 @@ void perftTest(int depth, Board *brd){
 
     }
     printf("\nTest Complete : %ld nodes nodes visited\n", leafNodes);
-
-    return;
 }
 
 
