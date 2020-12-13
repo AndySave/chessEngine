@@ -25,6 +25,7 @@ void perft(int depth, Board *brd){
 void perftTest(int depth, Board *brd){
     printBoard(brd);
     printf("\nStarting Test To Depth:%d\n", depth);
+    int start = getTime();
     leafNodes = 0;
     Movelist lst[1];
     generateLegalMoves(brd, lst);
@@ -46,6 +47,8 @@ void perftTest(int depth, Board *brd){
 
     }
     printf("\nTest Complete : %ld nodes nodes visited\n", leafNodes);
+    cout << "Time taken    : " << getTime() - start << "ms" << endl;
+    cout << "Nodes p/s     : " << leafNodes/(getTime()-start)*1000 << endl;
 }
 
 

@@ -108,7 +108,7 @@ extern void parseMove(Board *brd, const string& move);
 extern bool isRepetition(Board *brd);
 
 /// Search metoder
-extern void searchPosition(Board *brd, int maxDepth);
+extern int searchPosition(Board *brd, int maxDepth);
 
 /// Evalutaion metoder
 extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here
@@ -120,6 +120,10 @@ extern void resetBoard(Board *brd);
 extern void initBitMasks();
 extern void initHashkeys();
 extern void FENBoardUpdater(Board *brd, const std::string& fen=standardFen);
+
+/// Misc metoder
+extern int getTime();
+extern void playerMenu(Board *brd, int depth);
 
 /// Piece directions
 // initializing piece direction arrays

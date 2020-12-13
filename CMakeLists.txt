@@ -13,5 +13,6 @@ add_executable(chessEngine
         perft.cpp
         search.cpp
         evaluation.cpp
+        misc.cpp
         main.cpp board.cpp tests.cpp)
 

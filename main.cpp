@@ -1,6 +1,6 @@
 
 #include "defenitions.h"
-#define FEN "5k2/8/8/8/8/3Q4/1K6/8 w - - 0 1"
+#define FEN "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2"
 int main(){
     Board board{};
 
@@ -12,15 +12,10 @@ int main(){
     FENBoardUpdater(&board, FEN);
 
     // perftTest(5, &board);
-    while(true) {
-        cout << "midMultiplier: " << board.midMultiplier << endl;
-        cout << "endMultiplier: " << board.midMultiplier << endl;
-        searchPosition(&board, 8);
-        string mve;
-        cin >> mve;
-        parseMove(&board, mve);
-        printBoard(&board);
-    }
+
+    playerMenu(&board, 5);
+
 }
+
 
 

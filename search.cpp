@@ -46,7 +46,8 @@ static int negaMax(int alpha, int beta, int depth, Board *brd){
 }
 
 
-void searchPosition(Board *brd, int maxDepth){
+int searchPosition(Board *brd, int maxDepth){
+    nod = 0;
 
     int bestMove = 0;
     int bestScore = -100000;
@@ -80,15 +81,20 @@ void searchPosition(Board *brd, int maxDepth){
     if (!legal){
         if (sqAttacked(brd->kingSq[brd->side], brd->side^1, brd)){
             cout << "CHECKMATE" << endl;
+            abort();
         }else{
             cout << "STALEMATE" << endl;
+            abort();
         }
     }
 
-    cout << "Nodes: " << nod << endl;
+    cout << "\nNodes: " << nod << endl;
     cout << "Score: " << bestScore << endl;
     cout << "Best move: ";
     printMove(bestMove);
+    cout << "\n";
+
+    return bestMove;
 }
 
 
