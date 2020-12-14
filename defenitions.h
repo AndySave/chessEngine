@@ -6,6 +6,7 @@ typedef long long ll;
 typedef unsigned long long u64;
 
 #define standardFen "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define maxdepth 64
 
 #define fromsq(m) (m & 0x7F)
 #define tosq(m) ((m >> 7) & 0x7F)
@@ -70,6 +71,9 @@ struct Board{
     double midMultiplier = 1;
     double endMultiplier = 0;
 
+    unordered_map<u64, int> pvTable;
+    int pvArray[maxdepth];
+
 };
 
 /// Board metoder
@@ -104,7 +108,7 @@ extern void printMove(int move);  // takes in a move (32 bit number) and prints 
 extern void generateLegalMoves(Board *brd, Movelist *lst);  // generates all legal moves for a position
 extern bool makeMove(Board *brd, int move);  // Makes the move and updates board info
 extern void undoMove(Board *brd);  // Takes the move back and reverts board info
-extern void parseMove(Board *brd, const string& move);
+extern int parseMove(Board *brd, const string& move);
 extern bool isRepetition(Board *brd);
 
 /// Search metoder
@@ -120,6 +124,11 @@ extern void resetBoard(Board *brd);
 extern void initBitMasks();
 extern void initHashkeys();
 extern void FENBoardUpdater(Board *brd, const std::string& fen=standardFen);
+
+/// pvTable metoder
+extern void storePVMove(Board *brd, int move);
+extern int probePVTable(Board *brd);
+extern int getPVLine(int depth, Board *brd);
 
 /// Misc metoder
 extern int getTime();

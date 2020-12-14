@@ -582,7 +582,7 @@ bool isRepetition(Board *brd){
 }
 
 
-void parseMove(Board *brd, const string& moveStr){
+int parseMove(Board *brd, const string& moveStr){
     int from = sq64(algebraicTo64(moveStr.substr(0, 2)));
     int to = sq64(algebraicTo64(moveStr.substr(2, 2)));
     int cap = brd->pieces[to];
@@ -621,6 +621,6 @@ void parseMove(Board *brd, const string& moveStr){
         flag = epFlag;
     }
 
-    makeMove(brd, move(from, to, cap, prom, flag));
+    return move(from, to, cap, prom, flag);
 }
 

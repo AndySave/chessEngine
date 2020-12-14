@@ -47,8 +47,9 @@ static int negaMax(int alpha, int beta, int depth, Board *brd){
 
 
 int searchPosition(Board *brd, int maxDepth){
-    nod = 0;
+    brd->ply = 0;
 
+    nod = 0;
     int bestMove = 0;
     int bestScore = -100000;
     int score;
