@@ -134,27 +134,17 @@ const int allTables[13][64][3] = {
                 ,{ 59, 11}, { 89, 59}, { 45, 73}, { -1, 78}, { -1, 78}, { 45, 73}, { 89, 59}, { 59, 11}
         }
 };
+int totMat = 19004;  // Total material from beginning (excluding kings)
+int bishopPairValue = 50;
 
-//enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
-
-
-
-/**
- * Evaluates position based on the tables for each piece.
- * @param board Main board
- * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
- * @return Evaluated value multiplied with midgame/endgame multiplier.
- */
-
-/**
- * Evaluates position based on the tables for each piece.
- * @param board Main board
- * @param multiplier What should the evaluation be multiplied with based on midgame/endgame position.
- * @param game Midgame/Endgame : 0/1
- * @return Evaluated value multiplied with midgame/endgame multiplier.
- */
-
-
+static int evalBishopPair(Board *brd) {
+    int evaluation = 0;
+    //enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
+    //int pceNum[13]; Stores the number of pieces on the board. Empty 0 -> Black King 12.
+    if (brd->pceNum[3] == 2) evaluation += bishopPairValue;
+    if (brd->pceNum[9] == 2) evaluation -= bishopPairValue;
+    return evaluation;
+}
 static int evalPieceTables(Board *brd){
     int evaluation = 0;
     for (int i = 1; i<7; i++) {
@@ -169,26 +159,22 @@ static int evalPieceTables(Board *brd){
             evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][1] * brd->endMultiplier;
         }
     }
-
     return evaluation;
 }
 
 
-int totMat = 19004;  // Total material from beginning (excluding kings)
-
 int mainEval(Board *brd){
 
-    brd->midMultiplier = static_cast<double>(brd->material[white] + brd->material[black] - 120000) / 19004.0;
-    brd->endMultiplier = 1 - brd->midMultiplier;
+    brd->midMultiplier = (double)(brd->material[white] + brd->material[black] - 120000) / totMat;
+    brd->endMultiplier = 1.0 - brd->midMultiplier;
 
     int score = brd->material[white] - brd->material[black];
 
     score += evalPieceTables(brd);
-
+    score += evalBishopPair(brd);
 
     if (brd->side == white){
         return score;
     }
     return -score;
 }
-
