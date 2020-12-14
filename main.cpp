@@ -3,6 +3,9 @@
 #define FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 int main(){
     Board board{};
+    Searchinfo info{};
+
+    info.depth = 6;
 
     // foerste inits
     initBitMasks();
@@ -13,16 +16,8 @@ int main(){
 
     // perftTest(5, &board);
 
-    playerMenu(&board, 5);
+    playerMenu(&board, &info);
 
-    /*
-    while (true){
-        makeMove(&board, searchPosition(&board, 5));
-        printBoard(&board);
-        makeMove(&board, searchPosition(&board, 5));
-        printBoard(&board);
-    }
-     */
 }
 
 

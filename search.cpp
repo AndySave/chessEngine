@@ -1,10 +1,44 @@
 
 #include "defenitions.h"
 
-int nod = 0;
-static int negaMax(int alpha, int beta, int depth, Board *brd){
+#define INFINITE 100000
+#define MATE 300000
+
+static void checkUp(){
+
+}
+
+static void clearForSearch(Board *brd, Searchinfo *info){
+
+    for (int i = 0; i < 13; ++i){
+        for (int j = 0; j < 120; ++j){
+            brd->searchHistory[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < 2; ++i){
+        for (int j = 0; j < maxdepth; ++j){
+            brd->searchKillers[i][j] = 0;
+        }
+    }
+
+    brd->ply = 0;
+
+    info->starttime = getTime();
+    info->stopped = false;
+    info->nodes = 0;
+    info->fh = 0;
+    info->fhf = 0;
+
+}
+
+static int quiescence (int alpha, int beta, Board *brd, Searchinfo *info){
+    return 0;
+}
+
+static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info, bool doNull){
+    info->nodes++;
     if (depth == 0){
-        nod++;
         return mainEval(brd);
     }
 
@@ -12,9 +46,14 @@ static int negaMax(int alpha, int beta, int depth, Board *brd){
         return 0;
     }
 
-    bool legal = false;
+    if (brd->ply > maxdepth - 1){
+        return mainEval(brd);
+    }
+
+    int legal = 0;
     int score;
     int bestMove = 0;
+    int oldAlpha = alpha;
     Movelist lst[1];
     generateLegalMoves(brd, lst);
 
@@ -22,80 +61,65 @@ static int negaMax(int alpha, int beta, int depth, Board *brd){
         if (!makeMove(brd, lst->moves[moveNum].move)){
             continue;
         }
-        legal = true;
+        legal++;
 
-        score = -negaMax(-beta, -alpha, depth - 1, brd);
+        score = -negaMax(-beta, -alpha, depth - 1, brd, info, true);
         undoMove(brd);
 
         if (score > alpha){
             if (score >= beta){
+                if (legal == 1){
+                    info->fhf++;
+                }
+                info->fh++;
                 return beta;
             }
             alpha = score;
+            bestMove = lst->moves[moveNum].move;
         }
     }
+
     if (!legal){
         if (sqAttacked(brd->kingSq[brd->side], brd->side^1, brd)){
-            return -100000 + brd->ply;
+            return -MATE + brd->ply;
         }else{
             return 0;
         }
     }
 
+    if (alpha != oldAlpha){
+        storePVMove(brd, bestMove);
+    }
+
     return alpha;
 }
 
+int searchPosition(Board *brd, Searchinfo *info){
 
-int searchPosition(Board *brd, int maxDepth){
-    brd->ply = 0;
-
-    nod = 0;
     int bestMove = 0;
-    int bestScore = -100000;
-    int score;
-    bool legal = false;
+    int bestScore = -INFINITE;
+    int currDepth = 0;
+    int pvMoves = 0;
+    clearForSearch(brd, info);
 
-    /*
-    for (int currDepth = 0; currDepth < maxDepth; currDepth++){
-        bestScore = negaMax(-100000, 100000, currDepth, brd);
-    }
-     */
+    // Iterative deepening
+    for (currDepth = 1; currDepth <= info->depth; currDepth++){
 
-    Movelist lst[1];
-    generateLegalMoves(brd, lst);
+        bestScore = negaMax(-INFINITE, INFINITE, currDepth, brd, info, true);
+        pvMoves = getPVLine(currDepth, brd);
+        bestMove = brd->pvArray[0];
 
-    for (int moveNum = 0; moveNum < lst->count; moveNum++){
-        if (!makeMove(brd, lst->moves[moveNum].move)){
-            continue;
+        // Check if out of time
+
+        printf("Depth:%d score:%d move:%d nodes:%ld\n", currDepth, bestScore, bestMove, info->nodes);
+
+        cout << "Best line: ";
+        for(int i = 0; i < pvMoves; ++i){
+            printMove(brd->pvArray[i]);
         }
-        legal = true;
-
-        score = max(bestScore, -negaMax(-100000, 100000, maxDepth - 1, brd));
-        undoMove(brd);
-
-        if (score > bestScore){
-            bestMove = lst->moves[moveNum].move;
-            bestScore = score;
-        }
+        cout << "\n";
+        printf("Ordering: %.2f\n", (info->fhf/info->fh));
     }
 
-    if (!legal){
-        if (sqAttacked(brd->kingSq[brd->side], brd->side^1, brd)){
-            cout << "CHECKMATE" << endl;
-            abort();
-        }else{
-            cout << "STALEMATE" << endl;
-            abort();
-        }
-    }
-
-    cout << "\nNodes: " << nod << endl;
-    cout << "Score: " << bestScore << endl;
-    cout << "Best move: ";
-    printMove(bestMove);
-    cout << "\n";
-
-    return bestMove;
+    return 0;
 }
-
-

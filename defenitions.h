@@ -20,6 +20,26 @@ typedef unsigned long long u64;
 #define captureFlag 0x7C000
 #define promotedFlag 0xF00000
 
+/// Searchinfo structure
+struct Searchinfo{
+
+    int starttime;
+    int stoptime;
+    int depth;
+    int depthset;
+    int timeset;
+    int movestogo;
+    int infinite;
+
+    long nodes;
+
+    bool quit;
+    bool stopped;
+
+    float fh;
+    float fhf;
+};
+
 /// Move structure
 struct Move{
     int move;
@@ -74,6 +94,9 @@ struct Board{
     unordered_map<u64, int> pvTable;
     int pvArray[maxdepth];
 
+    int searchHistory[13][120];
+    int searchKillers[2][maxdepth];
+
 };
 
 /// Board metoder
@@ -112,7 +135,7 @@ extern int parseMove(Board *brd, const string& move);
 extern bool isRepetition(Board *brd);
 
 /// Search metoder
-extern int searchPosition(Board *brd, int maxDepth);
+extern int searchPosition(Board *brd, Searchinfo *info);
 
 /// Evalutaion metoder
 extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here
@@ -132,7 +155,7 @@ extern int getPVLine(int depth, Board *brd);
 
 /// Misc metoder
 extern int getTime();
-extern void playerMenu(Board *brd, int depth);
+extern void playerMenu(Board *brd, Searchinfo *info);
 
 /// Piece directions
 // initializing piece direction arrays
