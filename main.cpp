@@ -1,6 +1,6 @@
 
 #include "defenitions.h"
-#define FEN "rnbqkbnr/ppp1pppp/8/3p4/2PP4/8/PP2PPPP/RNBQKBNR b KQkq - 0 2"
+#define FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 int main(){
     Board board{};
 
@@ -15,7 +15,16 @@ int main(){
 
     playerMenu(&board, 5);
 
+    /*
+    while (true){
+        makeMove(&board, searchPosition(&board, 5));
+        printBoard(&board);
+        makeMove(&board, searchPosition(&board, 5));
+        printBoard(&board);
+    }
+     */
 }
+
 
 
 

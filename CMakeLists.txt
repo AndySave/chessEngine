@@ -14,5 +14,6 @@ add_executable(chessEngine
         search.cpp
         evaluation.cpp
         misc.cpp
+        pvtable.cpp
         main.cpp board.cpp tests.cpp)
 
