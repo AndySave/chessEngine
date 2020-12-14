@@ -141,8 +141,8 @@ static int evalBishopPair(Board *brd) {
     int evaluation = 0;
     //enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
     //int pceNum[13]; Stores the number of pieces on the board. Empty 0 -> Black King 12.
-    if (brd->pceNum[3] == 2) evaluation += bishopPairValue;
-    if (brd->pceNum[9] == 2) evaluation -= bishopPairValue;
+    if (brd->pceNum[3] > 1) evaluation += bishopPairValue;
+    if (brd->pceNum[9] > 1) evaluation -= bishopPairValue;
     return evaluation;
 }
 static int evalPieceTables(Board *brd){
