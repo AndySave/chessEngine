@@ -1,7 +1,5 @@
 #include "defenitions.h"
 
-const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
-
 const int Mirror64[64] = {
         56	,	57	,	58	,	59	,	60	,	61	,	62	,	63	,
         48	,	49	,	50	,	51	,	52	,	53	,	54	,	55	,
@@ -134,6 +132,7 @@ const int allTables[13][64][3] = {
                 ,{ 59, 11}, { 89, 59}, { 45, 73}, { -1, 78}, { -1, 78}, { 45, 73}, { 89, 59}, { 59, 11}
         }
 };
+const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
 int totMat = 19004;  // Total material from beginning (excluding kings)
 int bishopPairValue = 50;
 int passedPawnBonus = 122;
@@ -146,7 +145,7 @@ u64 BlackPassedMask[64];
 u64 WhitePassedMark[64];
 u64 IsolatedMask[64];
 
-void InitFilesRanksBrd() {
+void initFilesRanksBrd() {
 
     int index = 0;
     int file = FA;
@@ -167,7 +166,7 @@ void InitFilesRanksBrd() {
         }
     }
 }
-void InitEvalMasks() {
+void initEvalMasks() {
 
     int sq, tsq, r, f;
 
@@ -236,23 +235,18 @@ void InitEvalMasks() {
             }
         }
     }
-
-    for(sq = 0; sq < 64; ++sq) {
-        printBitBoard(IsolatedMask[sq]);
-    }
-
 }
 
 static int evalPassedPawns(Board *brd) {
     int evaluation = 0;
     //White first
     for (int i = 0; i<brd->pceNum[P]; i++) {
-        if (!(WhitePassedMark[brd->pieceList[P][i]] & brd->pawns[1] > 0)) {
+        if (!(WhitePassedMark[sq120(brd->pieceList[P][i])] & brd->pawns[black])) {
             evaluation += passedPawnBonus;
         }
     }
     for (int i = 0; i<brd->pceNum[p]; i++) {
-        if (!(WhitePassedMark[brd->pieceList[p][i]] & brd->pawns[0] > 0)) {
+        if (!(BlackPassedMask[sq120(brd->pieceList[p][i])] & brd->pawns[white])) {
             evaluation -= passedPawnBonus;
         }
     }
@@ -260,7 +254,7 @@ static int evalPassedPawns(Board *brd) {
 }
 
 static int isolatedPawns(Board *brd) {
-
+    return 0;
 }
 
 static int evalBishopPair(Board *brd) {
@@ -271,7 +265,6 @@ static int evalBishopPair(Board *brd) {
     if (brd->pceNum[9] > 1) evaluation -= bishopPairValue;
     return evaluation;
 }
-
 
 static int evalPieceTables(Board *brd){
     int evaluation = 0;
@@ -301,8 +294,11 @@ int mainEval(Board *brd){
     score += evalPieceTables(brd);
     score += evalBishopPair(brd);
 
+    score += evalPassedPawns(brd);
+
     if (brd->side == white){
         return score;
     }
     return -score;
 }
+

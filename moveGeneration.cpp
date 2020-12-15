@@ -6,6 +6,18 @@
 #define hashSide (brd->posKey ^= sideKey)
 #define hashEp (brd->posKey ^= pieceKeys[e][brd->enPas])
 
+
+const int victimScores[13] = {0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
+static int mvvLvaScores[13][13];
+
+void initMvvLva(){
+    for (int attacker = P; attacker <= k; ++attacker){
+        for (int victim = P; victim <= k; ++victim){
+            mvvLvaScores[victim][attacker] = victimScores[victim] + 6 - (victimScores[attacker] / 100);
+        }
+    }
+}
+
 /**
  * Prints a move in algebraic, i.e. a2a3
  * @param move int 32
@@ -24,19 +36,26 @@ int move(int from, int to, int capture, int promote, int flag){
 
 static void addQuietMove(const Board *brd, int move, Movelist *lst){
     lst->moves[lst->count].move = move;
-    lst->moves[lst->count].score = 0;
+    if (brd->searchKillers[0][brd->ply] == move){
+        lst->moves[lst->count].score = 900000;
+    }else if (brd->searchKillers[1][brd->ply] == move){
+        lst->moves[lst->count].score = 800000;
+    }else{
+        lst->moves[lst->count].score = brd->searchHistory[brd->pieces[fromsq(move)]][tosq(move)];
+    }
+
     lst->count++;
 }
 
 static void addCaptureMove(const Board *brd, int move, Movelist *lst){
     lst->moves[lst->count].move = move;
-    lst->moves[lst->count].score = 0;
+    lst->moves[lst->count].score = mvvLvaScores[captured(move)][brd->pieces[fromsq(move)]] + 1000000;
     lst->count++;
 }
 
 static void addEnPasMove(const Board *brd, int move, Movelist *lst){
     lst->moves[lst->count].move = move;
-    lst->moves[lst->count].score = 0;
+    lst->moves[lst->count].score = 105 + 1000000;
     lst->count++;
 }
 

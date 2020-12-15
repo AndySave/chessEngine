@@ -1,15 +1,18 @@
 
 #include "defenitions.h"
-#define FEN "5rk1/pp4pp/2pp1q2/4n3/P1P2N2/6P1/1PP1Q2P/4R1K1 b - - 2 21"
+#define FEN "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 int main(){
     Board board{};
     Searchinfo info{};
 
-    info.depth = 7;
+    info.depth = 8;
 
     // foerste inits
     initBitMasks();
     initHashkeys();
+    initFilesRanksBrd();
+    initEvalMasks();
+    initMvvLva();
 
     // andre inits
     FENBoardUpdater(&board, FEN);
@@ -17,4 +20,5 @@ int main(){
     playerMenu(&board, &info);
 
 }
+
 

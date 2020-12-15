@@ -2,10 +2,27 @@
 #include "defenitions.h"
 
 #define INFINITE 100000
-#define MATE 300000
+#define MATE 45000
 
 static void checkUp(){
 
+}
+
+static void pickNextMove(int moveNum, Movelist *lst){
+
+    Move temp;
+    int bestScore = 0;
+    int bestNum = moveNum;
+
+    for (int i = moveNum; i < lst->count; ++i){
+        if (lst->moves[i].score > bestScore){
+            bestScore = lst->moves[i].score;
+            bestNum = i;
+        }
+    }
+    temp = lst->moves[moveNum];
+    lst->moves[moveNum] = lst->moves[bestNum];
+    lst->moves[bestNum] = temp;
 }
 
 static void clearForSearch(Board *brd, Searchinfo *info){
@@ -42,7 +59,7 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
         return mainEval(brd);
     }
 
-    if (isRepetition(brd) || brd->fiftyMove >= 100){
+    if ((isRepetition(brd) || brd->fiftyMove >= 100) && brd->ply){
         return 0;
     }
 
@@ -54,10 +71,24 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     int score;
     int bestMove = 0;
     int oldAlpha = alpha;
+    int pvMove = probePVTable(brd);
     Movelist lst[1];
     generateLegalMoves(brd, lst);
 
+    // If the move is a pvMove (best move from previos iteration), then give it a score of 2 million
+    // This means it will be searched first
+    if (pvMove != 0){
+        for (int i = 0; i < lst->count; ++i){
+            if (lst->moves[i].move == pvMove){
+                lst->moves[i].score = 2000000;
+                break;
+            }
+        }
+    }
+
     for (int moveNum = 0; moveNum < lst->count; moveNum++){
+        pickNextMove(moveNum, lst);
+
         if (!makeMove(brd, lst->moves[moveNum].move)){
             continue;
         }
@@ -71,14 +102,23 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
                 if (legal == 1){
                     info->fhf++;
                 }
+                if (!(lst->moves[moveNum].move & captureFlag)){
+                    brd->searchKillers[1][brd->ply] = brd->searchKillers[0][brd->ply];
+                    brd->searchKillers[0][brd->ply] = lst->moves[moveNum].move;
+                }
                 info->fh++;
                 return beta;
             }
             alpha = score;
             bestMove = lst->moves[moveNum].move;
+
+            if (!(lst->moves[moveNum].move & captureFlag)){
+                brd->searchHistory[brd->pieces[fromsq(bestMove)]][tosq(bestMove)] += depth;
+            }
         }
     }
 
+    // If there are no legal moves, it has to be either checkmate or stalemate
     if (!legal){
         if (sqAttacked(brd->kingSq[brd->side], brd->side^1, brd)){
             return -MATE + brd->ply;
@@ -87,6 +127,7 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
         }
     }
 
+    // If alpha beat oldAlpha, then a new bestMove has been found
     if (alpha != oldAlpha){
         storePVMove(brd, bestMove);
     }
@@ -121,5 +162,5 @@ int searchPosition(Board *brd, Searchinfo *info){
         printf("Ordering: %.2f\n", (info->fhf/info->fh));
     }
 
-    return 0;
+    return bestMove;
 }

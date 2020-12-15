@@ -136,12 +136,15 @@ extern bool makeMove(Board *brd, int move);  // Makes the move and updates board
 extern void undoMove(Board *brd);  // Takes the move back and reverts board info
 extern int parseMove(Board *brd, const string& move);
 extern bool isRepetition(Board *brd);
+extern void initMvvLva();
 
 /// Search metoder
 extern int searchPosition(Board *brd, Searchinfo *info);
 
 /// Evalutaion metoder
 extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here
+extern void initFilesRanksBrd();
+extern void initEvalMasks();
 
 /// Inits
 // This isn't really used yet
