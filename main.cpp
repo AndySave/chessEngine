@@ -1,6 +1,6 @@
 
 #include "defenitions.h"
-#define FEN "r1bq1rk1/ppp2ppp/2n2n2/2b1pP2/4P1P1/2PP1Q2/P6P/RNB1KBNR b KQ - 0 9"
+#define FEN "6rk/1p3p1p/p1q2pr1/8/2P2Q2/3P2P1/PP3P2/R3R1K1 b - - 0 21"
 
 void startUI() {
     Board board{};
