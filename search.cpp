@@ -128,9 +128,23 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     if (inCheck){
         depth++;
     }
+    int score = -INFINITE;
+
+
+    if (doNull && !inCheck && brd->ply && depth >= 4){
+        makeNullMove(brd);
+        score = -negaMax(-beta, -beta + 1, depth - 4, brd, info, false);
+        undoNullMove(brd);
+        if (info->stopped){
+            return 0;
+        }
+        if (score >= beta){
+            return beta;
+        }
+    }
+
 
     int legal = 0;
-    int score;
     int bestMove = 0;
     int oldAlpha = alpha;
     int pvMove = probePVTable(brd);

@@ -135,6 +135,8 @@ extern void generateLegalMoves(Board *brd, Movelist *lst);  // generates all leg
 extern void generateLegalCaptures(Board *brd, Movelist *lst);
 extern bool makeMove(Board *brd, int move);  // Makes the move and updates board info
 extern void undoMove(Board *brd);  // Takes the move back and reverts board info
+extern void makeNullMove(Board *brd);
+extern void undoNullMove(Board *brd);
 extern int parseMove(Board *brd, const string& move);
 extern bool isRepetition(Board *brd);
 extern void initMvvLva();

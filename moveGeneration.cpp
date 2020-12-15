@@ -759,6 +759,46 @@ void undoMove(Board *brd){
 }
 
 
+void makeNullMove(Board *brd){
+    brd->ply++;
+    brd->history[brd->hisPly].posKey = brd->posKey;
+
+    if (brd->enPas){
+        hashEp;
+    }
+
+    brd->history[brd->hisPly].move = 0;
+    brd->history[brd->hisPly].fiftyMove = brd->fiftyMove;
+    brd->history[brd->hisPly].enPas = brd->enPas;
+    brd->history[brd->hisPly].castlePerm = brd->castlePerm;
+    brd->enPas = 0;
+
+    brd->side ^= 1;
+    brd->hisPly++;
+    hashSide;
+}
+
+void undoNullMove(Board *brd){
+    brd->hisPly--;
+    brd->ply--;
+
+    if (brd->enPas){
+        hashEp;
+    }
+
+    brd->enPas = brd->history[brd->hisPly].enPas;
+    brd->castlePerm = brd->history[brd->hisPly].castlePerm;
+    brd->fiftyMove = brd->history[brd->hisPly].fiftyMove;
+
+    if (brd->enPas){
+        hashEp;
+    }
+
+    brd->side ^= 1;
+    hashSide;
+}
+
+
 // TODO: come back later and turn into set
 bool isRepetition(Board *brd){
     for (int i = brd->hisPly - brd->fiftyMove; i < brd->hisPly-1; ++i){
