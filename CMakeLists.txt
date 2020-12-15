@@ -12,8 +12,8 @@ add_executable(chessEngine
         moveGeneration.cpp
         perft.cpp
         search.cpp
-        evaluation.cpp
         misc.cpp
+        evaluation.cpp
         pvtable.cpp
         main.cpp board.cpp tests.cpp)
 
