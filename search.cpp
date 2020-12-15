@@ -50,14 +50,32 @@ static void clearForSearch(Board *brd, Searchinfo *info){
 }
 
 static int quiescence (int alpha, int beta, Board *brd, Searchinfo *info){
-    return 0;
+    info->nodes++;
+
+    if ((isRepetition(brd) || brd->fiftyMove >= 100) && brd->ply){
+        return 0;
+    }
+
+    if (brd->ply > maxdepth - 1){
+        return mainEval(brd);
+    }
+
+    int score = mainEval(brd);
+
+    /*
+    if (alpha != oldAlpha){
+        storePVMove(brd, bestMove);
+    }
+     */
+
+    return alpha;
 }
 
 static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info, bool doNull){
-    info->nodes++;
     if (depth == 0){
         return mainEval(brd);
     }
+    info->nodes++;
 
     if ((isRepetition(brd) || brd->fiftyMove >= 100) && brd->ply){
         return 0;

@@ -346,6 +346,175 @@ void generateLegalMoves(Board *brd, Movelist *lst){
     }
 }
 
+
+void generateLegalCaptures(Board *brd, Movelist *lst){
+    lst->count = 0;
+
+    if (brd->side == white){
+
+        // Generating pawn moves
+        for (int i = 0; i < brd->pceNum[P]; i++){
+            int sq = brd->pieceList[P][i];
+            int rank = sq/10 - 1;
+
+            if (pceCol[brd->pieces[sq+9]] == black){
+                addWhitePawnCaptureMove(brd, sq, sq+9, brd->pieces[sq+9], lst);
+            }
+            if (pceCol[brd->pieces[sq+11]] == black){
+                addWhitePawnCaptureMove(brd, sq, sq+11, brd->pieces[sq+11], lst);
+            }
+
+            if (sq+9 == brd->enPas){
+                addEnPasMove(brd, move(sq, sq+9, e, e, epFlag), lst);
+            }
+            if (sq+11 == brd->enPas){
+                addEnPasMove(brd, move(sq, sq+11, e, e, epFlag), lst);
+            }
+
+        }
+
+        // Generating knight moves
+        for (int i = 0; i < brd->pceNum[N]; i++){
+            int sq = brd->pieceList[N][i];
+            for (int dir : NDir){
+                if (pceCol[brd->pieces[sq+dir]] == black){
+                    addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
+                }
+            }
+        }
+
+        // Generating king moves
+        for (int i = 0; i < brd->pceNum[K]; i++){
+            int sq = brd->pieceList[K][i];
+            for (int dir : KDir){
+                if (pceCol[brd->pieces[sq+dir]] == black){
+                    addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
+                }
+            }
+        }
+
+        // Generate bishop and queen moves
+        for (int i = 0; i < 2; i++){
+            int pce = diagPces[i];
+            for (int j = 0; j < brd->pceNum[pce]; j++){
+                int sq = brd->pieceList[pce][j];
+                for (int dir : BDir){
+                    int tSq = sq + dir;
+                    int pceOnSq = brd->pieces[tSq];
+
+                    while (pceOnSq == e){
+                        tSq += dir;
+                        pceOnSq = brd->pieces[tSq];
+                    }
+                    if (pceCol[pceOnSq] == black){
+                        addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                    }
+                }
+            }
+        }
+
+        // Generate rook and queen moves
+        for (int i = 0; i < 2; i++){
+            int pce = horVertPces[i];
+            for (int j = 0; j < brd->pceNum[pce]; j++){
+                int sq = brd->pieceList[pce][j];
+                for (int dir : RDir){
+                    int tSq = sq + dir;
+                    int pceOnSq = brd->pieces[tSq];
+
+                    while (pceOnSq == e){
+                        tSq += dir;
+                        pceOnSq = brd->pieces[tSq];
+                    }
+                    if (pceCol[pceOnSq] == black){
+                        addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                    }
+                }
+            }
+        }
+    }
+    else{
+        for (int i = 0; i < brd->pceNum[p]; i++){
+            int sq = brd->pieceList[p][i];
+            int rank = sq/10 - 1;
+
+            if (pceCol[brd->pieces[sq-9]] == white){
+                addBlackPawnCaptureMove(brd, sq, sq-9, brd->pieces[sq-9], lst);
+            }
+            if (pceCol[brd->pieces[sq-11]] == white){
+                addBlackPawnCaptureMove(brd, sq, sq-11, brd->pieces[sq-11], lst);
+            }
+
+            if (sq-9 == brd->enPas){
+                addEnPasMove(brd, move(sq, sq-9, e, e, epFlag), lst);
+            }
+            if (sq-11 == brd->enPas){
+                addEnPasMove(brd, move(sq, sq-11, e, e, epFlag), lst);
+            }
+        }
+
+        // Generating knight moves
+        for (int i = 0; i < brd->pceNum[n]; i++){
+            int sq = brd->pieceList[n][i];
+            for (int dir : NDir){
+                 if (pceCol[brd->pieces[sq+dir]] == white){
+                    addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
+                }
+            }
+        }
+
+        // Generating king moves
+        for (int i = 0; i < brd->pceNum[k]; i++){
+            int sq = brd->pieceList[k][i];
+            for (int dir : KDir){
+                if (pceCol[brd->pieces[sq+dir]] == white){
+                    addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
+                }
+            }
+        }
+
+        // Generate bishop and queen moves
+        for (int i = 2; i < 4; i++){
+            int pce = diagPces[i];
+            for (int j = 0; j < brd->pceNum[pce]; j++){
+                int sq = brd->pieceList[pce][j];
+                for (int dir : BDir){
+                    int tSq = sq + dir;
+                    int pceOnSq = brd->pieces[tSq];
+
+                    while (pceOnSq == e){
+                        tSq += dir;
+                        pceOnSq = brd->pieces[tSq];
+                    }
+                    if (pceCol[pceOnSq] == white){
+                        addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                    }
+                }
+            }
+        }
+
+        // Generate rook and queen moves
+        for (int i = 2; i < 4; i++){
+            int pce = horVertPces[i];
+            for (int j = 0; j < brd->pceNum[pce]; j++){
+                int sq = brd->pieceList[pce][j];
+                for (int dir : RDir){
+                    int tSq = sq + dir;
+                    int pceOnSq = brd->pieces[tSq];
+
+                    while (pceOnSq == e){
+                        tSq += dir;
+                        pceOnSq = brd->pieces[tSq];
+                    }
+                    if (pceCol[pceOnSq] == white){
+                        addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Used to bitwise & the brd->castlePerm with every move using these values. This will remove castling permission
 // if any pieces move from or land on squares not numbered 15
 const int cPerm[120] ={
