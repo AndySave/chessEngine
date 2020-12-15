@@ -22,9 +22,14 @@ void startUI() {
 }
 
 int main(){
-    startUI();
-    return 0;
 
+
+
+
+
+
+
+    return 0;
 }
 
 
