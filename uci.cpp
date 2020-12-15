@@ -4,7 +4,10 @@
 #define INPUTBUFFER 400 * 6
 string NAME = "B_0-t";
 
-void ParseGo(char* line, S_SEARCHINFO *info, Board *brd) {
+Board* board;
+Searchinfo *info;
+
+void ParseGo(char* line, searchInfo *info, Board *brd) {
 }
 void ParsePosition(char* lineIn, Board *brd) {
 }
@@ -19,10 +22,6 @@ void Uci_Loop() {
     printf("id author B_0-t\n");
     printf("uciok\n");
 
-
-    Board* board;
-    //Searchinfo *info;
-    //InitPvTable(pos->PvTable);
 
     while (true) {
         memset(&line[0], 0, sizeof(line));
