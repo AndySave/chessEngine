@@ -1,11 +1,11 @@
 
 #include "defenitions.h"
-#define FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define FEN "5rk1/pp4pp/2pp1q2/4n3/P1P2N2/6P1/1PP1Q2P/4R1K1 b - - 2 21"
 int main(){
     Board board{};
     Searchinfo info{};
 
-    info.depth = 6;
+    info.depth = 7;
 
     // foerste inits
     initBitMasks();
@@ -14,12 +14,7 @@ int main(){
     // andre inits
     FENBoardUpdater(&board, FEN);
 
-    // perftTest(5, &board);
-
     playerMenu(&board, &info);
 
 }
-
-
-
 

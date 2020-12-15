@@ -176,6 +176,7 @@ extern void perftTest(int depth, Board *brd);  // Finds out how many positions y
 enum sideToMove : short {white, black};
 enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
+enum files : short {FA, FB, FC, FD, FE, FF, FG, FH};
 
 extern const int pceMat[13];
 

@@ -111,7 +111,7 @@ int searchPosition(Board *brd, Searchinfo *info){
 
         // Check if out of time
 
-        printf("Depth:%d score:%d move:%d nodes:%ld\n", currDepth, bestScore, bestMove, info->nodes);
+        printf("Depth %d: score:%d move:%d nodes:%ld\n", currDepth, bestScore, bestMove, info->nodes);
 
         cout << "Best line: ";
         for(int i = 0; i < pvMoves; ++i){
