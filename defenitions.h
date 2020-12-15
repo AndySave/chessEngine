@@ -13,12 +13,15 @@ typedef unsigned long long u64;
 #define captured(m) ((m >> 14) & 0xF)
 #define promoted(m) ((m >> 20) & 0xF)
 
+
 #define epFlag 0x40000
 #define pwnStartFlag 0x80000
 #define castleFlag 0x1000000
 
 #define captureFlag 0x7C000
 #define promotedFlag 0xF00000
+
+#define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ) )
 
 /// Searchinfo structure
 struct Searchinfo{
@@ -177,6 +180,8 @@ enum sideToMove : short {white, black};
 enum castlingRights : short {WKC = 1, WQC = 2, BKC = 4, BQC = 8};
 enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
 enum files : short {FA, FB, FC, FD, FE, FF, FG, FH};
+enum ranks : short {R1, R2, R3, R4, R5, R6, R7, R8};
+
 
 extern const int pceMat[13];
 

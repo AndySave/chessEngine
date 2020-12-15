@@ -136,6 +136,132 @@ const int allTables[13][64][3] = {
 };
 int totMat = 19004;  // Total material from beginning (excluding kings)
 int bishopPairValue = 50;
+int passedPawnBonus = 122;
+
+int FilesBrd[120];
+int RanksBrd[120];
+int FileBBMask[8];
+int RankBBMask[8];
+u64 BlackPassedMask[64];
+u64 WhitePassedMark[64];
+u64 IsolatedMask[64];
+
+void InitFilesRanksBrd() {
+
+    int index = 0;
+    int file = FA;
+    int rank = R1;
+    int sq = 21;
+    int sq64 = 0;
+
+    for(index = 0; index < 120; ++index) {
+        FilesBrd[index] = o;
+        RanksBrd[index] = o;
+    }
+
+    for(rank = R1; rank <= R8; ++rank) {
+        for(file = FA; file <= FH; ++file) {
+            sq = FR2SQ(file,rank);
+            FilesBrd[sq] = file;
+            RanksBrd[sq] = rank;
+        }
+    }
+}
+void InitEvalMasks() {
+
+    int sq, tsq, r, f;
+
+    for(sq = 0; sq < 8; ++sq) {
+        FileBBMask[sq] = 0ULL;
+        RankBBMask[sq] = 0ULL;
+    }
+
+    for(r = R8; r >= R1; r--) {
+        for (f = FA; f <= FH; f++) {
+            sq = r * 8 + f;
+            FileBBMask[f] |= (1ULL << sq);
+            RankBBMask[r] |= (1ULL << sq);
+        }
+    }
+
+    for(sq = 0; sq < 64; ++sq) {
+        IsolatedMask[sq] = 0ULL;
+        WhitePassedMark[sq] = 0ULL;
+        BlackPassedMask[sq] = 0ULL;
+    }
+
+    for(sq = 0; sq < 64; ++sq) {
+        tsq = sq + 8;
+
+        while(tsq < 64) {
+            WhitePassedMark[sq] |= (1ULL << tsq);
+            tsq += 8;
+        }
+
+        tsq = sq - 8;
+        while(tsq >= 0) {
+            BlackPassedMask[sq] |= (1ULL << tsq);
+            tsq -= 8;
+        }
+
+        if(FilesBrd[sq64(sq)] > FA) {
+            IsolatedMask[sq] |= FileBBMask[FilesBrd[sq64(sq)] - 1];
+
+            tsq = sq + 7;
+            while(tsq < 64) {
+                WhitePassedMark[sq] |= (1ULL << tsq);
+                tsq += 8;
+            }
+
+            tsq = sq - 9;
+            while(tsq >= 0) {
+                BlackPassedMask[sq] |= (1ULL << tsq);
+                tsq -= 8;
+            }
+        }
+
+        if(FilesBrd[sq64(sq)] < FH) {
+            IsolatedMask[sq] |= FileBBMask[FilesBrd[sq64(sq)] + 1];
+
+            tsq = sq + 9;
+            while(tsq < 64) {
+                WhitePassedMark[sq] |= (1ULL << tsq);
+                tsq += 8;
+            }
+
+            tsq = sq - 7;
+            while(tsq >= 0) {
+                BlackPassedMask[sq] |= (1ULL << tsq);
+                tsq -= 8;
+            }
+        }
+    }
+
+    for(sq = 0; sq < 64; ++sq) {
+        printBitBoard(IsolatedMask[sq]);
+    }
+
+}
+
+static int evalPassedPawns(Board *brd) {
+    int evaluation = 0;
+    //White first
+    for (int i = 0; i<brd->pceNum[P]; i++) {
+        if (!(WhitePassedMark[brd->pieceList[P][i]] & brd->pawns[1] > 0)) {
+            evaluation += passedPawnBonus;
+        }
+    }
+    for (int i = 0; i<brd->pceNum[p]; i++) {
+        if (!(WhitePassedMark[brd->pieceList[p][i]] & brd->pawns[0] > 0)) {
+            evaluation -= passedPawnBonus;
+        }
+    }
+    return evaluation;
+}
+
+static int isolatedPawns(Board *brd) {
+
+}
 
 static int evalBishopPair(Board *brd) {
     int evaluation = 0;
@@ -145,6 +271,8 @@ static int evalBishopPair(Board *brd) {
     if (brd->pceNum[9] > 1) evaluation -= bishopPairValue;
     return evaluation;
 }
+
+
 static int evalPieceTables(Board *brd){
     int evaluation = 0;
     for (int i = 1; i<7; i++) {
