@@ -23,7 +23,6 @@ void startUI() {
 
 int main(){
 
-Uci_Loop();
 
 
 
