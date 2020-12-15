@@ -123,6 +123,12 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
         return mainEval(brd);
     }
 
+    bool inCheck = sqAttacked(brd->kingSq[brd->side], brd->side^1, brd);
+
+    if (inCheck){
+        depth++;
+    }
+
     int legal = 0;
     int score;
     int bestMove = 0;
@@ -176,7 +182,7 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
 
     // If there are no legal moves, it has to be either checkmate or stalemate
     if (!legal){
-        if (sqAttacked(brd->kingSq[brd->side], brd->side^1, brd)){
+        if (inCheck){
             return -MATE + brd->ply;
         }else{
             return 0;
