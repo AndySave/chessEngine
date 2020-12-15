@@ -221,7 +221,7 @@ int searchPosition(Board *brd, Searchinfo *info){
             printMove(brd->pvArray[i]);
         }
         cout << "\n";
-        printf("Ordering: %.2f\n", (info->fhf/info->fh));
+        //printf("Ordering: %.2f\n", (info->fhf/info->fh));
     }
 
     return bestMove;

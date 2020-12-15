@@ -1,11 +1,11 @@
 
 #include "defenitions.h"
-#define FEN "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
+#define FEN "r1bq1rk1/ppp2ppp/2n2n2/2b1pP2/4P1P1/2PP1Q2/P6P/RNB1KBNR b KQ - 0 9"
 int main(){
     Board board{};
     Searchinfo info{};
 
-    info.depth = 8;
+    info.depth = 7;
 
     // foerste inits
     initBitMasks();
