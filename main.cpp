@@ -1,7 +1,8 @@
 
 #include "defenitions.h"
-#define FEN "r1b1kb1r/2pp1ppp/1np1q3/p3P3/2P5/1P6/PB1NQPPP/R3KB1R w - - 0 1"
-int main(){
+#define FEN "r1bq1rk1/ppp2ppp/2n2n2/2b1pP2/4P1P1/2PP1Q2/P6P/RNB1KBNR b KQ - 0 9"
+
+void startUI() {
     Board board{};
     Searchinfo info{};
 
@@ -15,10 +16,17 @@ int main(){
     initMvvLva();
 
     // andre inits
-    FENBoardUpdater(&board, standardFen);
+    FENBoardUpdater(&board, FEN);
 
     playerMenu(&board, &info);
+}
+
+int main(){
+    startUI();
+    return 0;
 
 }
+
+
 
 
