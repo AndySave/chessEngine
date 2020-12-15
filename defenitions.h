@@ -132,6 +132,7 @@ extern u64 castleKeys[16];
 /// Move metoder
 extern void printMove(int move);  // takes in a move (32 bit number) and prints it in this format: a2a3
 extern void generateLegalMoves(Board *brd, Movelist *lst);  // generates all legal moves for a position
+extern void generateLegalCaptures(Board *brd, Movelist *lst);
 extern bool makeMove(Board *brd, int move);  // Makes the move and updates board info
 extern void undoMove(Board *brd);  // Takes the move back and reverts board info
 extern int parseMove(Board *brd, const string& move);

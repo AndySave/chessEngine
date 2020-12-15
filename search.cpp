@@ -62,18 +62,56 @@ static int quiescence (int alpha, int beta, Board *brd, Searchinfo *info){
 
     int score = mainEval(brd);
 
-    /*
+    if (score >= beta){
+        return beta;
+    }
+
+    if (score > alpha){
+        alpha = score;
+    }
+
+    int legal = 0;
+    score = -INFINITE;
+    int bestMove = 0;
+    int oldAlpha = alpha;
+    Movelist lst[1];
+    generateLegalCaptures(brd, lst);
+
+    for (int moveNum = 0; moveNum < lst->count; moveNum++) {
+        pickNextMove(moveNum, lst);
+
+        if (!makeMove(brd, lst->moves[moveNum].move)) {
+            continue;
+        }
+        legal++;
+
+        score = -quiescence(-beta, -alpha, brd, info);
+        undoMove(brd);
+
+        if (score > alpha) {
+            if (score >= beta) {
+                if (legal == 1) {
+                    info->fhf++;
+                }
+                info->fh++;
+                return beta;
+            }
+            alpha = score;
+            bestMove = lst->moves[moveNum].move;
+        }
+    }
+
     if (alpha != oldAlpha){
         storePVMove(brd, bestMove);
     }
-     */
+
 
     return alpha;
 }
 
 static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info, bool doNull){
     if (depth == 0){
-        return mainEval(brd);
+        return quiescence(alpha, beta, brd, info);
     }
     info->nodes++;
 
