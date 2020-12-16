@@ -2,6 +2,7 @@
 #include "defenitions.h"
 #define FEN "6rk/1p3p1p/p1q2pr1/8/2P2Q2/3P2P1/PP3P2/R3R1K1 b - - 0 21"
 
+
 void startUI() {
     Board board{};
     Searchinfo info{};
