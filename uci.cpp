@@ -75,7 +75,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
     }
 
     if(depth == -1) {
-        info->depth = maxdepth;
+        info->depth = 7; //satt til maxdepth av bluefever, valgte her 7.
     }
 
     printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
@@ -86,7 +86,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
 void uciCommunication() {
     Board board{};
     Searchinfo info{};
-    //info.depth = 7;
+    info.depth = 5;
 
     while (true) {
         string input; getline(cin, input);
@@ -107,7 +107,7 @@ void uciCommunication() {
              */
             cout << "readyok" << endl;
 
-        } else if (input == "ucinewgame") {
+        } else if (input == "ucinewgame" || input == "new") {
             /*this is sent to the engine when the next search
              *(started with "position" and "go") will be from a different game.
              */
