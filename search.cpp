@@ -211,7 +211,8 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     return alpha;
 }
 
-int optDepths[11] = {8, 8, 7, 7, 7, 8, 9, 9, 10, 10, 12};
+int optDepths[11] = {8, 8, 7, 7, 8, 8, 9, 10, 12, 12, 12};
+
 int searchPosition(Board *brd, Searchinfo *info){
     int optDepth;
     int bestMove = 0;
@@ -228,8 +229,9 @@ int searchPosition(Board *brd, Searchinfo *info){
         bestMove = brd->pvArray[0];
 
         brd->midMultiplier = (double)(brd->material[white] + brd->material[black] - 120000) / 19004;
-        optDepth = brd->midMultiplier * 10;
-        if ((getTime() >= info->stoptime && bestMove) || currDepth >= optDepths[optDepth]){
+        brd->endMultiplier = 1 - brd->midMultiplier;
+        optDepth = brd->endMultiplier * 10;
+        if ((getTime() >= info->stoptime || currDepth >= optDepths[optDepth]) && bestMove){
             return bestMove;
         }
 
