@@ -211,7 +211,7 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     return alpha;
 }
 
-int optDepths[11] = {8, 8, 7, 7, 8, 8, 9, 10, 12, 12, 12};
+int optDepths[11] = {8, 7, 7, 7, 8, 9, 10, 11, 11, 12, 12};
 
 int searchPosition(Board *brd, Searchinfo *info){
     int optDepth;

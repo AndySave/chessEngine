@@ -75,7 +75,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
     }
 
     if(depth == -1) {
-        info->depth = 100; //satt til maxdepth av bluefever, valgte her 7.
+        info->depth = 12; //satt til maxdepth av bluefever, valgte her 7.
     }
 
     printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
@@ -86,7 +86,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
 void uciCommunication() {
     Board board{};
     Searchinfo info{};
-    info.depth = 100;
+    info.depth = 12;
 
     initBitMasks();
     initHashkeys();
