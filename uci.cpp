@@ -88,6 +88,13 @@ void uciCommunication() {
     Searchinfo info{};
     info.depth = 5;
 
+    initBitMasks();
+    initHashkeys();
+    initFilesRanksBrd();
+    initEvalMasks();
+    initMvvLva();
+    FENBoardUpdater(&board, standardFen);
+
     while (true) {
         string input; getline(cin, input);
 
