@@ -9,10 +9,84 @@ bool isPositionInput(string s) {
     return false;
 }
 
+int makesLifeEasier(string lookingFor, string line, int lookingForLength) {
+    lookingForLength++;
+    int startIndex = line.find(lookingFor) + lookingForLength;
+    string val = "";
+    for (int i = startIndex; i<line.length(); i++) {
+        if (line[i] == ' ') break;
+        val += line[i];
+    }
+    int res = stoi(val);
+    return res;
+
+}
+// go depth 6 wtime 180000 btime 100000 binc 1000 winc 1000 movetime 1000 movestogo 40
+void uciGO(string line, Searchinfo *info, Board *board) {
+
+    int depth = -1, movestogo = 30,movetime = -1;
+    int time = -1, inc = 0;
+    int startIndex = 0;
+    info->timeset = false;
+
+    if (line.find("infinite") != line.npos) {
+        ;
+    }
+
+    if (line.find("binc")  != line.npos && board->side == 1) { //Black to move (1)
+        inc = makesLifeEasier("binc", line, 4);
+    }
+
+    if (line.find("winc") != line.npos && board->side == 0) { //White to move (0)
+        inc = makesLifeEasier("winc", line, 4);
+    }
+
+    if (line.find("wtime") != line.npos && board->side == 0) { //White to move (0)
+        time = makesLifeEasier("wtime", line, 5);
+    }
+
+    if (line.find("btime") != line.npos && board->side == 1) { //Black to move (1)
+        makesLifeEasier("btime", line, 5);
+    }
+
+    if (line.find("movestogo") != line.npos) {
+        movestogo = makesLifeEasier("movestogo", line, 9);
+    }
+    if (line.find("movetime") != line.npos) {
+        movetime = makesLifeEasier("movetime", line, 8);
+    }
+    if (line.find("depth") != line.npos) {
+        depth = makesLifeEasier("depth", line, 5);
+    }
+
+    if(movetime != -1) {
+        time = movetime;
+        movestogo = 1;
+    }
+
+    info->starttime = getTime(); //Skal vaere i millisekunder!
+    info->depth = depth;
+
+    if(time != -1) {
+        info->timeset = true;
+        time /= movestogo;
+        time -= 50;
+        info->stoptime = info->starttime + time + inc;
+    }
+
+    if(depth == -1) {
+        info->depth = maxdepth;
+    }
+
+    printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
+           time,info->starttime,info->stoptime,info->depth,info->timeset);
+    searchPosition(board, info);
+}
+
 void uciCommunication() {
     Board board{};
     Searchinfo info{};
-    info.depth = 7;
+    //info.depth = 7;
 
     while (true) {
         string input; getline(cin, input);
@@ -43,20 +117,36 @@ void uciCommunication() {
             initEvalMasks();
             initMvvLva();
 
+        } else if (input == "quit") {
+            break;
         } else if (input.length() > 10 && isPositionInput(input)) {
             if (input.find("fen") != input.npos) {
                 //what to do
+                int startOfFen = input.find("fen") + 4;
+                int endOfFen = input.length()-1;
+                if (input.find("moves") != input.npos) {
+                    endOfFen = input.find("moves") - 2;
+                }
+                int fenLength = endOfFen - startOfFen + 1;
+                FENBoardUpdater(&board, input.substr(startOfFen, fenLength));
+                cout << input.substr(startOfFen, fenLength) << endl;
+
             } else if (input.find("startpos") != input.npos) {
                 FENBoardUpdater(&board, standardFen);
             }
 
             if (input.find("moves") != input.npos) {
-                cout << "Debugger: in moves found!" << endl;
+                cout << "Debugger || moves keyword found!" << endl;
                 int startPos = input.find("moves") + 6;
 
                 while (startPos < input.length()-1) {
                     string move = input.substr(startPos, 5);
-                    cout << move << endl;
+                    if (move[move.size()-1] == ' ') {
+                        move.pop_back();
+                    } else {
+                        startPos++;
+                    }
+                    cout <<"Debugger || move:" <<move <<"!" << endl;
                     int newMove = parseMove(&board, move);
                     makeMove(&board, newMove);
 
@@ -64,10 +154,13 @@ void uciCommunication() {
                 }
             }
 
-        } else if (input == "go") {
+        } else if (input.size() > 1 && input[0] == 'g' && input[1] == 'o') {
             //start calculating on the current position set up with the "position" command.
+            uciGO(input,&info, &board);
+            printf("bestmove ");
+            printMove(board.pvArray[0]);
+            cout << endl;
 
-            //her maa vi threade i tilfelle vi mottar stop command
 
         } else if (input == "help") {
             cout << "Command: uci" << endl;
@@ -82,7 +175,6 @@ void uciCommunication() {
         else {
             cout << "Unknown command, type help to view all commands." << endl;
         }
-        if (engineName == "22") break;
 
 
     }
