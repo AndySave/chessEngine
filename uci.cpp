@@ -46,7 +46,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
     }
 
     if (line.find("btime") != line.npos && board->side == 1) { //Black to move (1)
-        makesLifeEasier("btime", line, 5);
+        time = makesLifeEasier("btime", line, 5);
     }
 
     if (line.find("movestogo") != line.npos) {
@@ -65,6 +65,8 @@ void uciGO(string line, Searchinfo *info, Board *board) {
     }
 
     info->starttime = getTime(); //Skal vaere i millisekunder!
+    info->stoptime = info->starttime + time / 60;
+
     info->depth = depth;
 
     if(time != -1) {
@@ -75,7 +77,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
     }
 
     if(depth == -1) {
-        info->depth = 7; //satt til maxdepth av bluefever, valgte her 7.
+        info->depth = 100; //satt til maxdepth av bluefever, valgte her 7.
     }
 
     printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
@@ -86,7 +88,7 @@ void uciGO(string line, Searchinfo *info, Board *board) {
 void uciCommunication() {
     Board board{};
     Searchinfo info{};
-    info.depth = 5;
+    info.depth = 100;
 
     initBitMasks();
     initHashkeys();

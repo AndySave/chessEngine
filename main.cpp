@@ -1,13 +1,13 @@
 
 #include "defenitions.h"
-#define FEN "6rk/1p3p1p/p1q2pr1/8/2P2Q2/3P2P1/PP3P2/R3R1K1 b - - 0 21"
+#define FEN "8/p4p1p/2p4P/8/5k2/5p2/2r5/5K2 w - - 2 43"
 
 
 void startUI() {
     Board board{};
     Searchinfo info{};
 
-    info.depth = 7;
+    info.depth = 6;
 
     // foerste inits
     initBitMasks();
@@ -26,13 +26,10 @@ int main(){
     //startUI();
     uciCommunication();
 
-
-
-
-
-
+    startUI();
     return 0;
 }
+
 
 
 
