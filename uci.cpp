@@ -65,8 +65,6 @@ void uciGO(string line, Searchinfo *info, Board *board) {
     }
 
     info->starttime = getTime(); //Skal vaere i millisekunder!
-    info->stoptime = info->starttime + time / 60;
-
     info->depth = depth;
 
     if(time != -1) {
@@ -165,7 +163,7 @@ void uciCommunication() {
 
         } else if (input.size() > 1 && input[0] == 'g' && input[1] == 'o') {
             //start calculating on the current position set up with the "position" command.
-            uciGO(input,&info, &board);
+            uciGO(input, &info, &board);
             printf("bestmove ");
             printMove(board.pvArray[0]);
             cout << endl;
