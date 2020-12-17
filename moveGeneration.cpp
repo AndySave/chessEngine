@@ -6,7 +6,6 @@
 #define hashSide (brd->posKey ^= sideKey)
 #define hashEp (brd->posKey ^= pieceKeys[e][brd->enPas])
 
-
 const int victimScores[13] = {0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
 static int mvvLvaScores[13][13];
 
@@ -110,10 +109,13 @@ const int diagPces[4] = {B, Q, b, q};
 const int horVertPces[4] = {R, Q, r, q};
 
 void generateLegalMoves(Board *brd, Movelist *lst){
+    int mobBonusCt = 0;
     lst->count = 0;
 
     if (brd->side == white){
-
+        brd->whiteMidMobility = 0;
+        brd->whiteEndMobility = 0;
+        brd->whiteBattery = false;
         // Generating pawn moves
         for (int i = 0; i < brd->pceNum[P]; i++){
             int sq = brd->pieceList[P][i];
@@ -149,10 +151,15 @@ void generateLegalMoves(Board *brd, Movelist *lst){
             for (int dir : NDir){
                 if (brd->pieces[sq + dir] == e){
                     addQuietMove(brd, move(sq, sq+dir, e, e, e), lst);
+                    mobBonusCt += 1;
                 }else if (pceCol[brd->pieces[sq+dir]] == black){
                     addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
+                    mobBonusCt += 1;
                 }
             }
+            brd->whiteMidMobility += mobilityBonus[0][mobBonusCt][0];
+            brd->whiteEndMobility += mobilityBonus[0][mobBonusCt][1];
+            mobBonusCt = 0;
         }
 
         // Generating king moves
@@ -180,11 +187,23 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addQuietMove(brd, move(sq, tSq, e, e, e), lst);
                         tSq += dir;
                         pceOnSq = brd->pieces[tSq];
+                        mobBonusCt += 1;
                     }
                     if (pceCol[pceOnSq] == black){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                        mobBonusCt += 1;
+                    }else if (pceOnSq == Q){
+                        brd->whiteBattery = true;
                     }
                 }
+                if (pce == B){
+                    brd->whiteMidMobility += mobilityBonus[1][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[1][mobBonusCt][1];
+                }else{
+                    brd->whiteMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
+                mobBonusCt = 0;
             }
         }
 
@@ -201,11 +220,23 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addQuietMove(brd, move(sq, tSq, e, e, e), lst);
                         tSq += dir;
                         pceOnSq = brd->pieces[tSq];
+                        mobBonusCt += 1;
                     }
                     if (pceCol[pceOnSq] == black){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                        mobBonusCt += 1;
+                    } else if (pceOnSq == Q || pceOnSq == R){
+                        brd->whiteBattery = true;
                     }
                 }
+                if (pce == R){
+                    brd->whiteMidMobility += mobilityBonus[2][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[2][mobBonusCt][1];
+                }else{
+                    brd->whiteMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
+                mobBonusCt = 0;
             }
         }
 
@@ -231,6 +262,9 @@ void generateLegalMoves(Board *brd, Movelist *lst){
 
     }
     else{
+        brd->blackMidMobility = 0;
+        brd->blackEndMobility = 0;
+
         for (int i = 0; i < brd->pceNum[p]; i++){
             int sq = brd->pieceList[p][i];
             int rank = sq/10 - 1;
@@ -264,10 +298,15 @@ void generateLegalMoves(Board *brd, Movelist *lst){
             for (int dir : NDir){
                 if (brd->pieces[sq + dir] == e){
                     addQuietMove(brd, move(sq, sq+dir, e, e, e), lst);
+                    mobBonusCt += 1;
                 }else if (pceCol[brd->pieces[sq+dir]] == white){
                     addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
+                    mobBonusCt += 1;
                 }
             }
+            brd->blackMidMobility += mobilityBonus[0][mobBonusCt][0];
+            brd->blackEndMobility += mobilityBonus[0][mobBonusCt][1];
+            mobBonusCt = 0;
         }
 
         // Generating king moves
@@ -295,11 +334,23 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addQuietMove(brd, move(sq, tSq, e, e, e), lst);
                         tSq += dir;
                         pceOnSq = brd->pieces[tSq];
+                        mobBonusCt += 1;
                     }
                     if (pceCol[pceOnSq] == white){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                        mobBonusCt += 1;
+                    }else if (pceOnSq == q){
+                        brd->blackBattery = true;
                     }
                 }
+                if (pce == b){
+                    brd->blackMidMobility += mobilityBonus[1][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[1][mobBonusCt][1];
+                }else{
+                    brd->blackMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
+                mobBonusCt = 0;
             }
         }
 
@@ -316,11 +367,23 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addQuietMove(brd, move(sq, tSq, e, e, e), lst);
                         tSq += dir;
                         pceOnSq = brd->pieces[tSq];
+                        mobBonusCt += 1;
                     }
                     if (pceCol[pceOnSq] == white){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
+                        mobBonusCt += 1;
+                    }else if(pceOnSq == q || pceOnSq == r){
+                        brd->blackBattery = true;
                     }
                 }
+                if (pce == r){
+                    brd->blackMidMobility += mobilityBonus[2][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[2][mobBonusCt][1];
+                }else{
+                    brd->blackMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
+                mobBonusCt = 0;
             }
         }
 

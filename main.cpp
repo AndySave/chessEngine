@@ -1,6 +1,6 @@
 
 #include "defenitions.h"
-#define FEN "8/p4p1p/2p4P/8/5k2/5p2/2r5/5K2 w - - 2 43"
+#define FEN "6k1/5Q2/1B4p1/7p/8/P1PB3P/5PP1/R5K1 b - - 0 3"
 
 
 void startUI() {

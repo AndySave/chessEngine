@@ -132,6 +132,28 @@ const int allTables[13][64][3] = {
                 ,{ 59, 11}, { 89, 59}, { 45, 73}, { -1, 78}, { -1, 78}, { 45, 73}, { 89, 59}, { 59, 11}
         }
 };
+
+const int mobilityBonus[6][28][2] = {
+        {}, {},
+        { {-75,-76}, {-56,-54}, {-9,-26}, {-2,-10}, {6,  5}, {15, 11}, // Knights
+                {22, 26}, {30, 28}, {36, 29} },
+
+        { {-48,-58}, {-21,-19}, {16, -2}, {26, 12}, {37, 22}, {51, 42}, // Bishops
+                {54, 54}, {63, 58}, {65, 63}, {71, 70}, {79, 74}, {81, 86},
+                {92, 90}, {97, 94} },
+
+        { {-56,-78}, {-25,-18}, {-11, 26}, {-5, 55}, {-4, 70}, {-1, 81}, // Rooks
+                {8,109}, {14,120}, {21,128}, {23,143}, {31,154}, {32,160},
+                {43,165}, {49,168}, {59,169} },
+
+        { {-40,-35}, {-25,-12}, {2,  7}, {4, 19}, {14, 37}, {24, 55}, // Queens
+                {25, 62}, {40, 76}, {43, 79}, {47, 87}, {54, 94}, {56,102},
+                {60,111}, {70,116}, {72,118}, {73,122}, {75,128}, {77,130},
+                {85,133}, {94,136}, {99,140}, {108,157}, {112,158}, {113,161},
+                {118,174}, {119,177}, {123,191}, {128,199} }
+};
+
+
 const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
 int totMat = 19004;  // Total material from beginning (excluding kings)
 int bishopPairValue = 50;
@@ -284,6 +306,25 @@ static int evalPieceTables(Board *brd){
 }
 
 
+const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
+static int evalMobilityBonus(Board *brd){
+    int evaluation = 0;
+    evaluation += brd->whiteMidMobility * brd->midMultiplier;
+    evaluation += brd->whiteEndMobility * brd->endMultiplier;
+    evaluation -= brd->blackMidMobility * brd->midMultiplier;
+    evaluation -= brd->blackEndMobility * brd->endMultiplier;
+
+    if (brd->whiteBattery){
+        evaluation += batteryBonus;
+    }
+    if (brd->blackBattery){
+        evaluation -= batteryBonus;
+    }
+
+    return evaluation;
+}
+
+
 int mainEval(Board *brd){
 
     brd->midMultiplier = (double)(brd->material[white] + brd->material[black] - 120000) / totMat;
@@ -295,6 +336,8 @@ int mainEval(Board *brd){
     score += evalBishopPair(brd);
 
     score += evalPassedPawns(brd);
+
+    score += evalMobilityBonus(brd);
 
     if (brd->side == white){
         return score;
