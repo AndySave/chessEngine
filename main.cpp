@@ -25,8 +25,6 @@ void startUI() {
 int main(){
     //startUI();
     uciCommunication();
-
-    startUI();
     return 0;
 }
 
