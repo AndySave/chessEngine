@@ -307,25 +307,12 @@ static int evalPieceTables(Board *brd){
 
 
 const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
-int whiteMobilitySQs[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-int blackMobilitySQs[13] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static int evalMobilityBonus(Board *brd){
     int evaluation = 0;
-
-    // Index 1 in the mobilitySQs arrays are the battery bonus. They are either 0 or 1.
-    if (whiteMobilitySQs[1]){
-        evaluation += batteryBonus;
-    }
-    if (blackMobilitySQs[1]){
-        evaluation -= batteryBonus;
-    }
-
-    for (int i = 0; i < 4; i++){
-        evaluation += mobilityBonus[i][whiteMobilitySQs[i+N]][0] * brd->midMultiplier;
-        evaluation += mobilityBonus[i][whiteMobilitySQs[i+N]][1] * brd->endMultiplier;
-        evaluation -= mobilityBonus[i][blackMobilitySQs[i+n]][0] * brd->midMultiplier;
-        evaluation -= mobilityBonus[i][blackMobilitySQs[i+n]][1] * brd->endMultiplier;
-    }
+    evaluation += brd->whiteMidMobility * brd->midMultiplier;
+    evaluation += brd->whiteEndMobility * brd->endMultiplier;
+    evaluation -= brd->blackMidMobility * brd->midMultiplier;
+    evaluation -= brd->blackEndMobility * brd->endMultiplier;
 
     return evaluation;
 }

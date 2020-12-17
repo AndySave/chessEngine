@@ -113,10 +113,8 @@ void generateLegalMoves(Board *brd, Movelist *lst){
     lst->count = 0;
 
     if (brd->side == white){
-
-        // resetting the batteryBonus
-        whiteMobilitySQs[1] = 0;
-
+        brd->whiteMidMobility = 0;
+        brd->whiteEndMobility = 0;
         // Generating pawn moves
         for (int i = 0; i < brd->pceNum[P]; i++){
             int sq = brd->pieceList[P][i];
@@ -158,11 +156,10 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     mobBonusCt += 1;
                 }
             }
+            brd->whiteMidMobility += mobilityBonus[0][mobBonusCt][0];
+            brd->whiteEndMobility += mobilityBonus[0][mobBonusCt][1];
+            mobBonusCt = 0;
         }
-
-        // Adding knight mobility bonus
-        whiteMobilitySQs[N] = mobBonusCt;
-        mobBonusCt = 0;
 
         // Generating king moves
         for (int i = 0; i < brd->pceNum[K]; i++){
@@ -195,17 +192,16 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     }else if (pceOnSq == Q){
-                        whiteMobilitySQs[1] = 1;
+                        // add battery bonus
                     }
                 }
-            }
-            if (pce == B){
-                // Adding bishop mobility bonus
-                whiteMobilitySQs[B] = mobBonusCt;
-                mobBonusCt = 0;
-            }else{
-                // Adding queen mobility bonus
-                whiteMobilitySQs[Q] = mobBonusCt;
+                if (pce == B){
+                    brd->whiteMidMobility += mobilityBonus[1][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[1][mobBonusCt][1];
+                }else{
+                    brd->whiteMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
                 mobBonusCt = 0;
             }
         }
@@ -229,17 +225,17 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     } else if (pceOnSq == Q){
-                        whiteMobilitySQs[1] = 1;
+                        // add battery bonus
                     }
                 }
-            }
-            if (pce == R){
-                // Adding rook mobility bonus
-                whiteMobilitySQs[R] = mobBonusCt;
+                if (pce == R){
+                    brd->whiteMidMobility += mobilityBonus[2][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[2][mobBonusCt][1];
+                }else{
+                    brd->whiteMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->whiteEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
                 mobBonusCt = 0;
-            }else{
-                // Adding queen mobility bonus
-                whiteMobilitySQs[Q] += mobBonusCt;
             }
         }
 
@@ -265,8 +261,8 @@ void generateLegalMoves(Board *brd, Movelist *lst){
 
     }
     else{
-        // resetting the batteryBonus
-        blackMobilitySQs[1] = 0;
+        brd->blackMidMobility = 0;
+        brd->blackEndMobility = 0;
 
         for (int i = 0; i < brd->pceNum[p]; i++){
             int sq = brd->pieceList[p][i];
@@ -307,11 +303,10 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     mobBonusCt += 1;
                 }
             }
+            brd->blackMidMobility += mobilityBonus[0][mobBonusCt][0];
+            brd->blackEndMobility += mobilityBonus[0][mobBonusCt][1];
+            mobBonusCt = 0;
         }
-
-        // Adding knight mobility bonus
-        blackMobilitySQs[n] = mobBonusCt;
-        mobBonusCt = 0;
 
         // Generating king moves
         for (int i = 0; i < brd->pceNum[k]; i++){
@@ -344,17 +339,16 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     }else if (pceOnSq == q){
-                        blackMobilitySQs[1] = 1;
+                        // add battery bonus
                     }
                 }
-            }
-            if (pce == b){
-                // Adding bishop mobility bonus
-                blackMobilitySQs[b] = mobBonusCt;
-                mobBonusCt = 0;
-            }else{
-                // Adding queen mobility bonus
-                blackMobilitySQs[q] = mobBonusCt;
+                if (pce == b){
+                    brd->blackMidMobility += mobilityBonus[1][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[1][mobBonusCt][1];
+                }else{
+                    brd->blackMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
                 mobBonusCt = 0;
             }
         }
@@ -378,17 +372,17 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     }else if(pceOnSq == q){
-                        blackMobilitySQs[1] = 1;
+                        // add battery bonus
                     }
                 }
-            }
-            if (pce == r){
-                // Adding rook mobility bonus
-                blackMobilitySQs[r] = mobBonusCt;
+                if (pce == r){
+                    brd->blackMidMobility += mobilityBonus[2][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[2][mobBonusCt][1];
+                }else{
+                    brd->blackMidMobility += mobilityBonus[3][mobBonusCt][0];
+                    brd->blackEndMobility += mobilityBonus[3][mobBonusCt][1];
+                }
                 mobBonusCt = 0;
-            }else{
-                // Adding queen mobility bonus
-                blackMobilitySQs[q] += mobBonusCt;
             }
         }
 

@@ -95,6 +95,11 @@ struct Board{
     double midMultiplier = 1;
     double endMultiplier = 0;
 
+    int whiteMidMobility;
+    int whiteEndMobility;
+    int blackMidMobility;
+    int blackEndMobility;
+
     unordered_map<u64, int> pvTable;
     int pvArray[maxdepth];
 
@@ -153,6 +158,7 @@ extern void initEvalMasks();
 /// Evalutaion containers
 extern int whiteMobilitySQs[13];
 extern int blackMobilitySQs[13];
+extern const int mobilityBonus[6][28][2];
 
 /// Inits
 // This isn't really used yet
