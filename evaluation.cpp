@@ -318,7 +318,7 @@ static int evalMobilityBonus(Board *brd){
         evaluation += batteryBonus;
     }
     if (brd->blackBattery){
-        evaluation += batteryBonus;
+        evaluation -= batteryBonus;
     }
 
     return evaluation;
