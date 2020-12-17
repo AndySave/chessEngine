@@ -115,6 +115,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
     if (brd->side == white){
         brd->whiteMidMobility = 0;
         brd->whiteEndMobility = 0;
+        brd->whiteBattery = false;
         // Generating pawn moves
         for (int i = 0; i < brd->pceNum[P]; i++){
             int sq = brd->pieceList[P][i];
@@ -192,7 +193,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     }else if (pceOnSq == Q){
-                        // add battery bonus
+                        brd->whiteBattery = true;
                     }
                 }
                 if (pce == B){
@@ -225,7 +226,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     } else if (pceOnSq == Q){
-                        // add battery bonus
+                        brd->whiteBattery = true;
                     }
                 }
                 if (pce == R){
@@ -339,7 +340,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     }else if (pceOnSq == q){
-                        // add battery bonus
+                        brd->blackBattery = true;
                     }
                 }
                 if (pce == b){
@@ -372,7 +373,7 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
                         mobBonusCt += 1;
                     }else if(pceOnSq == q){
-                        // add battery bonus
+                        brd->blackBattery = true;
                     }
                 }
                 if (pce == r){

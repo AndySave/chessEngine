@@ -314,6 +314,13 @@ static int evalMobilityBonus(Board *brd){
     evaluation -= brd->blackMidMobility * brd->midMultiplier;
     evaluation -= brd->blackEndMobility * brd->endMultiplier;
 
+    if (brd->whiteBattery){
+        evaluation += batteryBonus;
+    }
+    if (brd->blackBattery){
+        evaluation += batteryBonus;
+    }
+
     return evaluation;
 }
 

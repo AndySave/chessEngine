@@ -100,6 +100,9 @@ struct Board{
     int blackMidMobility;
     int blackEndMobility;
 
+    bool whiteBattery;
+    bool blackBattery;
+
     unordered_map<u64, int> pvTable;
     int pvArray[maxdepth];
 
