@@ -26,7 +26,6 @@ void uciGO(string line, Searchinfo *info, Board *board) {
 
     int depth = -1, movestogo = 30,movetime = -1;
     int time = -1, inc = 0;
-    int startIndex = 0;
     info->timeset = false;
 
     if (line.find("infinite") != line.npos) {
@@ -114,7 +113,7 @@ void uciCommunication() {
              */
             cout << "readyok" << endl;
 
-        } else if (input == "ucinewgame" || input == "new") {
+        } else if (input == "ucinewgame") {
             /*this is sent to the engine when the next search
              *(started with "position" and "go") will be from a different game.
              */
@@ -136,7 +135,6 @@ void uciCommunication() {
                 }
                 int fenLength = endOfFen - startOfFen + 1;
                 FENBoardUpdater(&board, input.substr(startOfFen, fenLength));
-                cout << input.substr(startOfFen, fenLength) << endl;
 
             } else if (input.find("startpos") != input.npos) {
                 FENBoardUpdater(&board, standardFen);
@@ -153,7 +151,6 @@ void uciCommunication() {
                     } else {
                         startPos++;
                     }
-                    cout <<"Debugger || move:" <<move <<"!" << endl;
                     int newMove = parseMove(&board, move);
                     makeMove(&board, newMove);
 
