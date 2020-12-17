@@ -150,6 +150,10 @@ extern int mainEval(Board *brd);  // The main eval, all minor eval functions goe
 extern void initFilesRanksBrd();
 extern void initEvalMasks();
 
+/// Evalutaion containers
+extern int whiteMobilitySQs[13];
+extern int blackMobilitySQs[13];
+
 /// Inits
 // This isn't really used yet
 extern void allInits(Board *brd);
