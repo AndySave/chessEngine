@@ -164,6 +164,7 @@ void uciCommunication() {
         } else if (input.size() > 1 && input[0] == 'g' && input[1] == 'o') {
             //start calculating on the current position set up with the "position" command.
             uciGO(input, &info, &board);
+            cout << "info depth 7 nodes 1" << endl;
             printf("bestmove ");
             printMove(board.pvArray[0]);
             cout << endl;
