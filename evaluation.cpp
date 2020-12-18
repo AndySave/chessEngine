@@ -157,7 +157,8 @@ const int mobilityBonus[6][28][2] = {
 const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
 int totMat = 19004;  // Total material from beginning (excluding kings)
 int bishopPairValue = 50;
-int passedPawnBonus = 122;
+int passedPawnBonus[8] = {0, 30, 40, 50, 78, 96, 122, 176};
+const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
 
 int FilesBrd[120];
 int RanksBrd[120];
@@ -264,12 +265,12 @@ static int evalPassedPawns(Board *brd) {
     //White first
     for (int i = 0; i<brd->pceNum[P]; i++) {
         if (!(WhitePassedMark[sq120(brd->pieceList[P][i])] & brd->pawns[black])) {
-            evaluation += passedPawnBonus;
+            evaluation += passedPawnBonus[RanksBrd[brd->pieceList[P][i]]];
         }
     }
     for (int i = 0; i<brd->pceNum[p]; i++) {
         if (!(BlackPassedMask[sq120(brd->pieceList[p][i])] & brd->pawns[white])) {
-            evaluation -= passedPawnBonus;
+            evaluation -= passedPawnBonus[RanksBrd[brd->pieceList[p][i]]];
         }
     }
     return evaluation;
@@ -306,7 +307,6 @@ static int evalPieceTables(Board *brd){
 }
 
 
-const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
 static int evalMobilityBonus(Board *brd){
     int evaluation = 0;
     evaluation += brd->whiteMidMobility * brd->midMultiplier;
