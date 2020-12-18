@@ -134,6 +134,7 @@ void uciCommunication() {
                     endOfFen = input.find("moves") - 2;
                 }
                 int fenLength = endOfFen - startOfFen + 1;
+                cout << input.substr(startOfFen, fenLength) << endl;
                 FENBoardUpdater(&board, input.substr(startOfFen, fenLength));
 
             } else if (input.find("startpos") != input.npos) {
@@ -141,7 +142,6 @@ void uciCommunication() {
             }
 
             if (input.find("moves") != input.npos) {
-                cout << "Debugger || moves keyword found!" << endl;
                 int startPos = input.find("moves") + 6;
 
                 while (startPos < input.length()-1) {
@@ -156,6 +156,7 @@ void uciCommunication() {
 
                     startPos += 5;
                 }
+                cout << "POSITION" << endl;
             }
 
         } else if (input.size() > 1 && input[0] == 'g' && input[1] == 'o') {
@@ -164,9 +165,13 @@ void uciCommunication() {
             printf("bestmove ");
             printMove(board.pvArray[0]);
             cout << endl;
+            cout << "GO" << endl;
 
 
-        } else if (input == "help") {
+        } else if (input == "eval") {
+            cout << "test" << endl;
+
+        }else if (input == "help") {
             cout << "Command: uci" << endl;
             cout << "Command: isready" << endl;
             cout << "Command: ucinewgame" << endl;
@@ -175,6 +180,7 @@ void uciCommunication() {
             cout << "Command: print" << endl;
         } else if (input == "print") {
             printBoard(&board);
+            printBoard120(&board);
         }
         else {
             cout << "Unknown command, type help to view all commands." << endl;
