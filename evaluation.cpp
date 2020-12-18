@@ -307,20 +307,35 @@ static int evalBishopPair(Board *brd) {
     return evaluation;
 }
 
-static int evalPieceTables(Board *brd){
-    int evaluation = 0;
+void initPceTableScore(Board *brd){
+    brd->whiteMidPceTableScore = 0;
+    brd->whiteEndPceTableScore = 0;
+    brd->blackMidPceTableScore = 0;
+    brd->blackEndPceTableScore = 0;
+
     for (int i = 1; i<7; i++) {
         for (int q = 0; q<brd->pceNum[i]; q++) {
-            evaluation += allTables[i][sq120(brd->pieceList[i][q])][0] * brd->midMultiplier;
-            evaluation += allTables[i][sq120(brd->pieceList[i][q])][1] * brd->endMultiplier;
+            brd->whiteMidPceTableScore += allTables[i][sq120(brd->pieceList[i][q])][0];
+            brd->whiteEndPceTableScore += allTables[i][sq120(brd->pieceList[i][q])][1];
         }
     }
     for (int i = 7; i<13; i++) {
         for (int q = 0; q<brd->pceNum[i]; q++) {
-            evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][0] * brd->midMultiplier;
-            evaluation -= allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][1] * brd->endMultiplier;
+            brd->blackMidPceTableScore += allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][0];
+            brd->blackEndPceTableScore += allTables[i][Mirror64[sq120(brd->pieceList[i][q])]][1];
         }
     }
+}
+
+static int evalPieceTables(Board *brd){
+    int evaluation = 0;
+
+    evaluation += brd->whiteMidPceTableScore * brd->midMultiplier;
+    evaluation += brd->whiteEndPceTableScore * brd->endMultiplier;
+
+    evaluation -= brd->blackMidPceTableScore * brd->midMultiplier;
+    evaluation -= brd->blackEndPceTableScore * brd->endMultiplier;
+
     return evaluation;
 }
 
@@ -351,13 +366,13 @@ int mainEval(Board *brd){
     int score = brd->material[white] - brd->material[black];
 
     score += evalPieceTables(brd);
+
     score += evalBishopPair(brd);
 
     score += evalPassedPawns(brd);
+    score += evalIsolatedPawns(brd);
 
     score += evalMobilityBonus(brd);
-
-    score += evalIsolatedPawns(brd);
 
     if (brd->side == white){
         return score;

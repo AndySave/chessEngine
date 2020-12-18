@@ -230,6 +230,9 @@ void FENBoardUpdater(Board *brd, const string& fen) {
 
     // Updating board values
     initBoardValues(brd);
+
+    // Updating pce value scores
+    initPceTableScore(brd);
 }
 
 /* This function converts a square from algebraic to 64-board notation.
