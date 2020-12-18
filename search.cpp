@@ -110,6 +110,7 @@ static int quiescence (int alpha, int beta, Board *brd, Searchinfo *info){
 }
 
 static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info, bool doNull){
+
     if (depth == 0){
         return quiescence(alpha, beta, brd, info);
     }
@@ -229,14 +230,17 @@ int searchPosition(Board *brd, Searchinfo *info){
         pvMoves = getPVLine(currDepth, brd);
         bestMove = brd->pvArray[0];
 
+
         brd->midMultiplier = (double)(brd->material[white] + brd->material[black] - 120000) / 19004;
         brd->endMultiplier = 1 - brd->midMultiplier;
         optDepth = brd->endMultiplier * 10;
         if ((getTime() >= info->stoptime || currDepth >= optDepths[optDepth]) && bestMove){
+            cout << "KING SQ: " << brd->kingSq[black] << "  " << sq64ToAlgebraic(sq120(brd->kingSq[black])) << "  " << brd->pieceList[k][0] << "\n";
             return bestMove;
         }
 
-        printf("Depth %d: score:%d move:%d nodes:%ld\n", currDepth, bestScore, bestMove, info->nodes);
+
+        printf("Depth %d: score:%d move:%d nodes:%lld\n", currDepth, bestScore, bestMove, info->nodes);
 
 
         cout << "Best line: ";
@@ -246,6 +250,5 @@ int searchPosition(Board *brd, Searchinfo *info){
         cout << "\n";
         //printf("Ordering: %.2f\n", (info->fhf/info->fh));
     }
-
     return bestMove;
 }

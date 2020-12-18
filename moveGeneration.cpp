@@ -617,7 +617,14 @@ static void clearPiece(int sq, Board *brd){
         clearBit(brd->pawns[2], sq);
     }
 
-
+    // Updating pce table scores
+    if (col == white){
+        brd->whiteMidPceTableScore -= allTables[pce][sq][0];
+        brd->whiteEndPceTableScore -= allTables[pce][sq][1];
+    }else{
+        brd->blackMidPceTableScore -= allTables[pce][Mirror64[sq]][0];
+        brd->blackEndPceTableScore -= allTables[pce][Mirror64[sq]][1];
+    }
 }
 
 // Basically the same as clearPiece, except we add a piece.
@@ -639,6 +646,15 @@ static void addPiece(int sq, Board *brd, int pce){
     if (pce == P || pce == p){
         setBit(brd->pawns[col], sq);
         setBit(brd->pawns[2], sq);
+    }
+
+    // Updating pce table scores
+    if (col == white){
+        brd->whiteMidPceTableScore += allTables[pce][sq][0];
+        brd->whiteEndPceTableScore += allTables[pce][sq][1];
+    }else{
+        brd->blackMidPceTableScore += allTables[pce][Mirror64[sq]][0];
+        brd->blackEndPceTableScore += allTables[pce][Mirror64[sq]][1];
     }
 }
 
@@ -666,6 +682,19 @@ static void movePiece(const int from, const int to, Board *brd){
             break;
         }
     }
+
+    // Updating pce table scores
+    if (col == white){
+        brd->whiteMidPceTableScore -= allTables[pce][sq120(from)][0];
+        brd->whiteEndPceTableScore -= allTables[pce][sq120(from)][1];
+        brd->whiteMidPceTableScore += allTables[pce][sq120(to)][0];
+        brd->whiteEndPceTableScore += allTables[pce][sq120(to)][1];
+    }else{
+        brd->blackMidPceTableScore -= allTables[pce][Mirror64[sq120(from)]][0];
+        brd->blackEndPceTableScore -= allTables[pce][Mirror64[sq120(from)]][1];
+        brd->blackMidPceTableScore += allTables[pce][Mirror64[sq120(to)]][0];
+        brd->blackEndPceTableScore += allTables[pce][Mirror64[sq120(to)]][1];
+    }
 }
 
 bool makeMove(Board *brd, int move){
@@ -686,12 +715,16 @@ bool makeMove(Board *brd, int move){
     }else if (move & castleFlag){
         if (to == 23){
             movePiece(21, 24, brd);
+
         }else if (to == 93){
             movePiece(91, 94, brd);
+
         }else if (to == 27){
             movePiece(28, 26, brd);
+
         }else{
             movePiece(98, 96, brd);
+
         }
     }
 
@@ -786,12 +819,16 @@ void undoMove(Board *brd){
     }else if (move & castleFlag){
         if (to == 23){
             movePiece(24, 21, brd);
+
         }else if (to == 93){
             movePiece(94, 91, brd);
+
         }else if (to == 27){
             movePiece(26, 28, brd);
+
         }else{
             movePiece(96, 98, brd);
+
         }
     }
 
@@ -908,4 +945,5 @@ int parseMove(Board *brd, const string& moveStr){
 
     return move(from, to, cap, prom, flag);
 }
+
 

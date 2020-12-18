@@ -95,6 +95,11 @@ struct Board{
     double midMultiplier = 1;
     double endMultiplier = 0;
 
+    int whiteMidPceTableScore;
+    int whiteEndPceTableScore;
+    int blackMidPceTableScore;
+    int blackEndPceTableScore;
+
     int whiteMidMobility;
     int whiteEndMobility;
     int blackMidMobility;
@@ -157,11 +162,12 @@ extern int searchPosition(Board *brd, Searchinfo *info);
 extern int mainEval(Board *brd);  // The main eval, all minor eval functions goes here
 extern void initFilesRanksBrd();
 extern void initEvalMasks();
+extern void initPceTableScore(Board *brd);
 
 /// Evalutaion containers
-extern int whiteMobilitySQs[13];
-extern int blackMobilitySQs[13];
+extern const int Mirror64[64];
 extern const int mobilityBonus[6][28][2];
+extern const int allTables[13][64][3];
 
 /// Inits
 // This isn't really used yet
