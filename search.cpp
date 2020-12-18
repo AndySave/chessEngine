@@ -236,7 +236,9 @@ int searchPosition(Board *brd, Searchinfo *info){
             return bestMove;
         }
 
-        printf("Depth %d: score:%d move:%d nodes:%ld\n", currDepth, bestScore, bestMove, info->nodes);
+        //printf("Depth %d: score:%d move:%d nodes:%ld\n", currDepth, bestScore, bestMove, info->nodes);
+        printf("info score cp %d depth %d nodes %ld time %d ",
+               bestScore,currDepth,info->nodes,getTime()-info->starttime);
 
 
         cout << "Best line: ";
