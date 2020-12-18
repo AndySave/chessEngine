@@ -92,6 +92,7 @@ void uciCommunication() {
     initFilesRanksBrd();
     initEvalMasks();
     initMvvLva();
+    info.quit = false;
     FENBoardUpdater(&board, standardFen);
 
     while (true) {
@@ -124,6 +125,7 @@ void uciCommunication() {
             initMvvLva();
 
         } else if (input == "quit") {
+            info.quit = true;
             break;
         } else if (input.length() > 10 && isPositionInput(input)) {
             if (input.find("fen") != input.npos) {
@@ -171,7 +173,9 @@ void uciCommunication() {
         } else if (input == "eval") {
             cout << "test" << endl;
 
-        }else if (input == "help") {
+        } else if (input == "quit") {
+            info.quit = true;
+        } else if (input == "help") {
             cout << "Command: uci" << endl;
             cout << "Command: isready" << endl;
             cout << "Command: ucinewgame" << endl;
@@ -185,6 +189,7 @@ void uciCommunication() {
         else {
             cout << "Unknown command, type help to view all commands." << endl;
         }
+        if (info.quit) break;
 
 
     }
