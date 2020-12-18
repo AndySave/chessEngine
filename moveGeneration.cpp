@@ -154,7 +154,6 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     mobBonusCt += 1;
                 }else if (pceCol[brd->pieces[sq+dir]] == black){
                     addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
-                    mobBonusCt += 1;
                 }
             }
             brd->whiteMidMobility += mobilityBonus[0][mobBonusCt][0];
@@ -191,7 +190,6 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     }
                     if (pceCol[pceOnSq] == black){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
-                        mobBonusCt += 1;
                     }else if (pceOnSq == Q){
                         brd->whiteBattery = true;
                     }
@@ -224,7 +222,6 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     }
                     if (pceCol[pceOnSq] == black){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
-                        mobBonusCt += 1;
                     } else if (pceOnSq == Q || pceOnSq == R){
                         brd->whiteBattery = true;
                     }
@@ -301,7 +298,6 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     mobBonusCt += 1;
                 }else if (pceCol[brd->pieces[sq+dir]] == white){
                     addCaptureMove(brd, move(sq, sq+dir, brd->pieces[sq+dir], e, e), lst);
-                    mobBonusCt += 1;
                 }
             }
             brd->blackMidMobility += mobilityBonus[0][mobBonusCt][0];
@@ -338,7 +334,6 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     }
                     if (pceCol[pceOnSq] == white){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
-                        mobBonusCt += 1;
                     }else if (pceOnSq == q){
                         brd->blackBattery = true;
                     }
@@ -371,7 +366,6 @@ void generateLegalMoves(Board *brd, Movelist *lst){
                     }
                     if (pceCol[pceOnSq] == white){
                         addCaptureMove(brd, move(sq, tSq, brd->pieces[tSq], e, e), lst);
-                        mobBonusCt += 1;
                     }else if(pceOnSq == q || pceOnSq == r){
                         brd->blackBattery = true;
                     }
