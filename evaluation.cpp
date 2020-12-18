@@ -155,10 +155,16 @@ const int mobilityBonus[6][28][2] = {
 
 
 const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
-int totMat = 19004;  // Total material from beginning (excluding kings)
-int bishopPairValue = 50;
-int passedPawnBonus[8] = {0, 30, 40, 50, 78, 96, 122, 176};
+const int totMat = 19004;  // Total material from beginning (excluding kings)
+const int bishopPairValue = 50;
+const int passedPawnBonus[8] = {0, 30, 40, 50, 78, 96, 122, 176}; //Indexed by file number.
 const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
+const int pawnIsolated = -10;
+
+const int rookOpenFile = 10;
+const int rookSemiOpenFile = 5;
+const int queenOpenFile = 5;
+const int queenSemiOpenFile = 3;
 
 int FilesBrd[120];
 int RanksBrd[120];
@@ -264,20 +270,32 @@ static int evalPassedPawns(Board *brd) {
     int evaluation = 0;
     //White first
     for (int i = 0; i<brd->pceNum[P]; i++) {
-        if (!(WhitePassedMark[sq120(brd->pieceList[P][i])] & brd->pawns[black])) {
+        if (WhitePassedMark[sq120(brd->pieceList[P][i])] & brd->pawns[black] == 0) {
             evaluation += passedPawnBonus[RanksBrd[brd->pieceList[P][i]]];
         }
     }
     for (int i = 0; i<brd->pceNum[p]; i++) {
-        if (!(BlackPassedMask[sq120(brd->pieceList[p][i])] & brd->pawns[white])) {
+        if (BlackPassedMask[sq120(brd->pieceList[p][i])] & brd->pawns[white] == 0) {
             evaluation -= passedPawnBonus[RanksBrd[brd->pieceList[p][i]]];
         }
     }
     return evaluation;
 }
 
-static int isolatedPawns(Board *brd) {
-    return 0;
+static int evalIsolatedPawns(Board *brd) {
+    int evaluation = 0;
+    //White first
+    for (int i = 0; i<brd->pceNum[P]; i++) {
+        if (IsolatedMask[sq120(brd->pieceList[P][i])] & brd->pawns[white] == 0) {
+            evaluation += pawnIsolated;
+        }
+    }
+    for (int i = 0; i<brd->pceNum[p]; i++) {
+        if (IsolatedMask[sq120(brd->pieceList[p][i])] & brd->pawns[black] == 0) {
+            evaluation -= pawnIsolated;
+        }
+    }
+    return evaluation;
 }
 
 static int evalBishopPair(Board *brd) {
@@ -338,6 +356,8 @@ int mainEval(Board *brd){
     score += evalPassedPawns(brd);
 
     score += evalMobilityBonus(brd);
+
+    score += evalIsolatedPawns(brd);
 
     if (brd->side == white){
         return score;
