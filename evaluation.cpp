@@ -377,13 +377,17 @@ static int piecesAttackingKingZone(Board *brd, int color) {
     return piecesAttackingKingZone;
 }
 
+const int kingUnsafeValue = -15;
 static int kingSafety(Board *brd) {
     int evaluation = 0;
     //White
     int whiteKingAttackers = piecesAttackingKingZone(brd, white);
+    if (whiteKingAttackers >= 2) evaluation += kingUnsafeValue*whiteKingAttackers;
     
     //Black
     int blackKingAttackers = piecesAttackingKingZone(brd, black);
+    if (blackKingAttackers >= 2) evaluation -= kingUnsafeValue*blackKingAttackers;
+    return  evaluation;
 }
 
 
