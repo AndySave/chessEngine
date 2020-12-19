@@ -111,8 +111,8 @@ struct Board{
 
     //Tracks the position of pieces. 13: Pieces, 10: Max number of pieces for each type.
     //Example of use: pieceList[whiteKnight ID][index not already occupied] = POSITION
+    //enum pieceValues : short {e, P, N, B, R, Q, K, p, n, b, r, q, k, o};
     int pieceList[13][10];
-
     double midMultiplier = 1;
     double endMultiplier = 0;
 

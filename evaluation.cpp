@@ -282,6 +282,13 @@ static int evalPassedPawns(Board *brd) {
     return evaluation;
 }
 
+static int evalKingSafety(Board *brd) {
+    //White
+    //Bare etter rokkert
+
+
+
+}
 static int evalIsolatedPawns(Board *brd) {
     int evaluation = 0;
     //White first
@@ -355,6 +362,28 @@ static int evalMobilityBonus(Board *brd){
     }
 
     return evaluation;
+}
+
+static int piecesAttackingKingZone(Board *brd, int color) {
+    int piecesAttackingKingZone = 0;
+    int kingPos =  (color == white) ? brd->pieceList[K][0] : brd->pieceList[k][0];
+    int kingZone[] = {kingPos - 11, kingPos - 10, kingPos - 9,
+                    kingPos - 1, kingPos, kingPos + 1, kingPos + 2,
+                    kingPos + 9, kingPos + 10, kingPos + 11};
+
+    for (int square : kingZone) {
+        if (brd->pieces[square] != o && sqAttacked(square, color, brd)) piecesAttackingKingZone++;
+    }
+    return piecesAttackingKingZone;
+}
+
+static int kingSafety(Board *brd) {
+    int evaluation = 0;
+    //White
+    int whiteKingAttackers = piecesAttackingKingZone(brd, white);
+    
+    //Black
+    int blackKingAttackers = piecesAttackingKingZone(brd, black);
 }
 
 
