@@ -159,7 +159,7 @@ const int totMat = 19004;  // Total material from beginning (excluding kings)
 const int bishopPairValue = 50;
 const int passedPawnBonus[8] = {0, 30, 40, 50, 78, 96, 122, 176}; //Indexed by file number.
 const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
-const int pawnIsolated = -10;
+const int pawnIsolated = -30;
 
 const int rookOpenFile = 10;
 const int rookSemiOpenFile = 5;

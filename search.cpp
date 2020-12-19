@@ -131,7 +131,6 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     }
     int score = -INFINITE;
 
-
     if (doNull && !inCheck && brd->ply && depth >= 4){
         makeNullMove(brd);
         score = -negaMax(-beta, -beta + 1, depth - 4, brd, info, false);
@@ -139,12 +138,12 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
         if (info->stopped){
             return 0;
         }
-        if (score >= beta){
+        if (score >= beta && abs(score) < MATE){
             return beta;
         }
     }
 
-
+    int bestScore = -INFINITE;
     int legal = 0;
     int bestMove = 0;
     int oldAlpha = alpha;
@@ -212,7 +211,7 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     return alpha;
 }
 
-int optDepths[11] = {8, 7, 7, 7, 8, 9, 10, 11, 11, 12, 12};
+int optDepths[11] = {10, 9, 9, 9, 9, 9, 10, 11, 11, 12, 12};
 //int optDepths[11] = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
 
 int searchPosition(Board *brd, Searchinfo *info){
@@ -235,20 +234,36 @@ int searchPosition(Board *brd, Searchinfo *info){
         brd->endMultiplier = 1 - brd->midMultiplier;
         optDepth = brd->endMultiplier * 10;
         if ((getTime() >= info->stoptime || currDepth >= optDepths[optDepth]) && bestMove){
-            cout << "KING SQ: " << brd->kingSq[black] << "  " << sq64ToAlgebraic(sq120(brd->kingSq[black])) << "  " << brd->pieceList[k][0] << "\n";
+            cout << "info string ";
+            cout << "Depth: " << currDepth << ' ';
+            cout << "Score: " << bestScore << ' ';
+            cout << "Move: " << bestMove << ' ';
+            cout << "Nodes: " << info->nodes << ' ';
+            cout << "Nps: " << (info->nodes*1000)/(getTime()-info->starttime) << ' ';
+
+            cout << "Pv: ";
+            for(int i = 0; i < pvMoves; ++i){
+                printMove(brd->pvArray[i]);
+            }
+            cout << "\n";
             return bestMove;
         }
 
 
-        printf("Depth %d: score:%d move:%d nodes:%lld\n", currDepth, bestScore, bestMove, info->nodes);
-
-
-        cout << "Best line: ";
-        for(int i = 0; i < pvMoves; ++i){
-            printMove(brd->pvArray[i]);
-        }
-        cout << "\n";
         //printf("Ordering: %.2f\n", (info->fhf/info->fh));
     }
+
+    cout << "info string ";
+    cout << "Depth: " << currDepth << ' ';
+    cout << "Score: " << bestScore << ' ';
+    cout << "Move: " << bestMove << ' ';
+    cout << "Nodes: " << info->nodes << ' ';
+    cout << "Nps: " << (info->nodes*1000)/(getTime()-info->starttime) << ' ';
+
+    cout << "Pv: ";
+    for(int i = 0; i < pvMoves; ++i){
+        printMove(brd->pvArray[i]);
+    }
+    cout << "\n";
     return bestMove;
 }

@@ -24,6 +24,27 @@ typedef unsigned long long u64;
 
 #define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ) )
 
+/// Hashentry struct
+enum {hfnone, hfalpha, hfbeta, hfexact};
+struct Hashentry{
+    u64 posKey;
+    int move;
+    int score;
+    int depth;
+    int flags;
+};
+
+/// Hashtable struct
+struct Hashtable{
+    Hashentry *pTable;
+    int numEntries;
+    int newWrite;
+    int overWrite;
+    int hit;
+    int cut;
+};
+
+
 /// Searchinfo structure
 struct Searchinfo{
 
@@ -109,6 +130,7 @@ struct Board{
     bool blackBattery;
 
     unordered_map<u64, int> pvTable;
+    Hashtable hashTable[1];
     int pvArray[maxdepth];
 
     int searchHistory[13][120];
@@ -181,6 +203,10 @@ extern void FENBoardUpdater(Board *brd, const std::string& fen=standardFen);
 extern void storePVMove(Board *brd, int move);
 extern int probePVTable(Board *brd);
 extern int getPVLine(int depth, Board *brd);
+extern void clearHashTable(Hashtable *table);
+extern void initHashTable(Hashtable *table, const int MB);
+extern bool probeHashEntry(Board *brd, int *move, int *score, int alpha, int beta, int depth);
+extern void storeHashEntry(Board *brd, const int move, int score, const int flags, const int depth);
 
 /// Misc metoder
 extern int getTime();

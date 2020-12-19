@@ -1,5 +1,6 @@
 
 #include "defenitions.h"
+#define MATE 45000
 
 void storePVMove(Board *brd, int move){
     brd->pvTable[brd->posKey] = move;
@@ -31,4 +32,5 @@ int getPVLine(int depth, Board *brd){
 
     return count;
 }
+
 
