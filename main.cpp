@@ -15,6 +15,7 @@ void startUI() {
     initFilesRanksBrd();
     initEvalMasks();
     initMvvLva();
+    initPawnShieldBB();
 
     // andre inits
     FENBoardUpdater(&board, FEN);

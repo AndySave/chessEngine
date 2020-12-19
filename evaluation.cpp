@@ -160,6 +160,7 @@ const int bishopPairValue = 50;
 const int passedPawnBonus[8] = {0, 30, 40, 50, 78, 96, 122, 176}; //Indexed by file number.
 const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
 const int pawnIsolated = -30;
+int pawnShieldPenalty[6] = {-80, -50, -20, 10, 10, 10};
 
 const int rookOpenFile = 10;
 const int rookSemiOpenFile = 5;
@@ -357,6 +358,60 @@ static int evalMobilityBonus(Board *brd){
     return evaluation;
 }
 
+u64 whitePawnShieldBB[47];
+u64 blackPawnShieldBB[47];
+void initPawnShieldBB(){
+    for (int sq = 0; sq < 47; sq++){
+        u64 bb = 0;
+        int rank = sq / 8;
+
+        if ((sq+7) / 8 == rank+1){
+            setBit(bb, sq+7);
+            setBit(bb, sq+15);
+        }
+        if ((sq+9) / 8 == rank+1){
+            setBit(bb, sq+9);
+            setBit(bb, sq+17);
+        }
+
+        setBit(bb, sq+8);
+        setBit(bb, sq+16);
+        whitePawnShieldBB[sq] = bb;
+
+        bb = 0;
+        rank = (63-sq) / 8;
+        if ((56 - sq) / 8 == rank-1){
+            setBit(bb, 56 - sq);
+            setBit(bb, 48 - sq);
+        }
+        if ((54 - sq) / 8 == rank-1){
+            setBit(bb, 54 - sq);
+            setBit(bb, 46 - sq);
+        }
+
+        setBit(bb, 55 - sq);
+        setBit(bb, 47 - sq);
+        blackPawnShieldBB[sq] = bb;
+    }
+}
+
+static int pawnShield(Board *brd){
+    int evaluation = 0;
+
+    int sq = sq120(brd->kingSq[white]);
+
+    if (sq < 32){
+        evaluation += pawnShieldPenalty[countBit(whitePawnShieldBB[sq] & brd->pawns[white])] * brd->midMultiplier;
+    }
+
+    sq = 63 - sq120(brd->kingSq[black]);
+    if (sq < 32){
+        evaluation -= pawnShieldPenalty[countBit(blackPawnShieldBB[sq] & brd->pawns[black])] * brd->midMultiplier;
+    }
+
+    return evaluation;
+}
+
 
 int mainEval(Board *brd){
 
@@ -373,6 +428,9 @@ int mainEval(Board *brd){
     score += evalIsolatedPawns(brd);
 
     score += evalMobilityBonus(brd);
+
+    /// King safety
+    score += pawnShield(brd);
 
     if (brd->side == white){
         return score;

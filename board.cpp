@@ -482,5 +482,14 @@ void clearBit(u64 &bitBoard, int sq){
 }
 
 
+int countBit(u64 bb){
+    int ct = 0;
+    for (; bb; ct++){
+        bb = bb & (bb-1);
+    }
+    return ct;
+}
+
+
 
 

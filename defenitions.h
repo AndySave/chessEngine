@@ -153,6 +153,7 @@ extern void printSqAttacked(int side, Board *brd);  // prints all sq's that are 
 extern void printBitBoard(u64 bitBoard);  // prints the bitBoard to the console
 extern void setBit(u64 &bitBoard, int sq);  // sets a specific bit in the bitboard to 1
 extern void clearBit(u64 &bitBoard, int sq);  // sets a specific bit in the bitboard to 0
+extern int countBit(u64 bb);
 
 
 /// Hashkey metoder
@@ -185,6 +186,7 @@ extern int mainEval(Board *brd);  // The main eval, all minor eval functions goe
 extern void initFilesRanksBrd();
 extern void initEvalMasks();
 extern void initPceTableScore(Board *brd);
+extern void initPawnShieldBB();
 
 /// Evalutaion containers
 extern const int Mirror64[64];
