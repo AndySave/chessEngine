@@ -138,7 +138,7 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
         if (info->stopped){
             return 0;
         }
-        if (score >= beta && abs(score) < MATE){
+        if (score >= beta && abs(score) < (MATE-100)){
             return beta;
         }
     }
@@ -211,8 +211,8 @@ static int negaMax(int alpha, int beta, int depth, Board *brd, Searchinfo *info,
     return alpha;
 }
 
-int optDepths[11] = {9, 8, 8, 8, 8, 8, 9, 10, 11, 12, 12};
-//int optDepths[11] = {8, 7, 7, 7, 7, 7, 7, 8, 10, 11, 12};
+//int optDepths[11] = {9, 8, 8, 8, 8, 8, 9, 10, 11, 12, 12};
+int optDepths[11] = {7, 7, 7, 7, 7, 7, 7, 8, 10, 11, 12};
 
 int searchPosition(Board *brd, Searchinfo *info){
     int optDepth;

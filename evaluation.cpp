@@ -157,10 +157,13 @@ const int mobilityBonus[6][28][2] = {
 const int pceMat[13] = {0, 150, 781, 825, 1276, 2538, 60000, 150, 781, 825, 1276, 2538, 60000};
 const int totMat = 19004;  // Total material from beginning (excluding kings)
 const int bishopPairValue = 50;
-const int passedPawnBonus[8] = {0, 30, 40, 50, 78, 96, 122, 176}; //Indexed by file number.
+const int passedPawnBonus[8] = {0, 50, 50, 50, 78, 96, 122, 176}; //Indexed by file number.
 const int batteryBonus = 50;  // A small bonus if bishop+queen or rook+queen forms a battery.
 const int pawnIsolated = -30;
-int pawnShieldPenalty[6] = {-80, -50, -20, 10, 10, 10};
+int pawnShieldBonus[7] = {-10, 0, 40, 100, 110, 110, 110};
+int openFileToKingPenalty = -50;
+int semiOpenFilePenalty[4] = {0, -30, -60, -90};
+int openFilePenalty[4] = {0, -50, -100, -150};
 
 const int rookOpenFile = 10;
 const int rookSemiOpenFile = 5;
@@ -169,11 +172,14 @@ const int queenSemiOpenFile = 3;
 
 int FilesBrd[120];
 int RanksBrd[120];
-int FileBBMask[8];
-int RankBBMask[8];
+u64 FileBBMask[8] = {0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
+                     0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080};
+u64 RankBBMask[8];
 u64 BlackPassedMask[64];
 u64 WhitePassedMark[64];
 u64 IsolatedMask[64];
+u64 whitePawnShieldBB[47];
+u64 blackPawnShieldBB[47];
 
 void initFilesRanksBrd() {
 
@@ -201,14 +207,14 @@ void initEvalMasks() {
     int sq, tsq, r, f;
 
     for(sq = 0; sq < 8; ++sq) {
-        FileBBMask[sq] = 0ULL;
+        //FileBBMask[sq] = 0ULL;
         RankBBMask[sq] = 0ULL;
     }
 
     for(r = R8; r >= R1; r--) {
         for (f = FA; f <= FH; f++) {
             sq = r * 8 + f;
-            FileBBMask[f] |= (1ULL << sq);
+            //FileBBMask[f] |= (1ULL << sq);
             RankBBMask[r] |= (1ULL << sq);
         }
     }
@@ -271,12 +277,12 @@ static int evalPassedPawns(Board *brd) {
     int evaluation = 0;
     //White first
     for (int i = 0; i<brd->pceNum[P]; i++) {
-        if (WhitePassedMark[sq120(brd->pieceList[P][i])] & brd->pawns[black] == 0) {
+        if ((WhitePassedMark[sq120(brd->pieceList[P][i])] & brd->pawns[black]) == 0) {
             evaluation += passedPawnBonus[RanksBrd[brd->pieceList[P][i]]];
         }
     }
     for (int i = 0; i<brd->pceNum[p]; i++) {
-        if (BlackPassedMask[sq120(brd->pieceList[p][i])] & brd->pawns[white] == 0) {
+        if ((BlackPassedMask[sq120(brd->pieceList[p][i])] & brd->pawns[white]) == 0) {
             evaluation -= passedPawnBonus[RanksBrd[brd->pieceList[p][i]]];
         }
     }
@@ -287,12 +293,12 @@ static int evalIsolatedPawns(Board *brd) {
     int evaluation = 0;
     //White first
     for (int i = 0; i<brd->pceNum[P]; i++) {
-        if (IsolatedMask[sq120(brd->pieceList[P][i])] & brd->pawns[white] == 0) {
+        if ((IsolatedMask[sq120(brd->pieceList[P][i])] & brd->pawns[white]) == 0) {
             evaluation += pawnIsolated;
         }
     }
     for (int i = 0; i<brd->pceNum[p]; i++) {
-        if (IsolatedMask[sq120(brd->pieceList[p][i])] & brd->pawns[black] == 0) {
+        if ((IsolatedMask[sq120(brd->pieceList[p][i])] & brd->pawns[black]) == 0) {
             evaluation -= pawnIsolated;
         }
     }
@@ -358,8 +364,6 @@ static int evalMobilityBonus(Board *brd){
     return evaluation;
 }
 
-u64 whitePawnShieldBB[47];
-u64 blackPawnShieldBB[47];
 void initPawnShieldBB(){
     for (int sq = 0; sq < 47; sq++){
         u64 bb = 0;
@@ -400,18 +404,98 @@ static int pawnShield(Board *brd){
 
     int sq = sq120(brd->kingSq[white]);
 
-    if (sq < 32){
-        evaluation += pawnShieldPenalty[countBit(whitePawnShieldBB[sq] & brd->pawns[white])] * brd->midMultiplier;
+    if (sq < 8){
+        evaluation += pawnShieldBonus[countBit(whitePawnShieldBB[sq] & brd->pawns[white])];
+    }else if (sq < 16){
+        evaluation += pawnShieldBonus[countBit(whitePawnShieldBB[sq] & brd->pawns[white])] / 3;
     }
 
     sq = 63 - sq120(brd->kingSq[black]);
-    if (sq < 32){
-        evaluation -= pawnShieldPenalty[countBit(blackPawnShieldBB[sq] & brd->pawns[black])] * brd->midMultiplier;
+    if (sq < 8){
+        evaluation -= pawnShieldBonus[countBit(blackPawnShieldBB[sq] & brd->pawns[black])];
+    }else if (sq < 16){
+        evaluation -= pawnShieldBonus[countBit(blackPawnShieldBB[sq] & brd->pawns[black])] / 3;
     }
 
-    return evaluation;
+    return evaluation * brd->midMultiplier;
 }
 
+static int openFilesNearKing(Board *brd){
+    int evaluation = 0;
+    int smallPenaltyCt = 0;
+    int bigPenaltyCt = 0;
+    int whiteKingFile = brd->kingSq[white] % 8;
+
+    if(!(FileBBMask[whiteKingFile] & brd->pawns[white])){
+        if (!(FileBBMask[whiteKingFile] & brd->pawns[black])){
+            bigPenaltyCt += 1;
+        }else{
+            smallPenaltyCt += 1;
+        }
+        evaluation += openFileToKingPenalty;
+    }
+
+    if (whiteKingFile + 1 < 8) {
+        if (!(FileBBMask[whiteKingFile+1] & brd->pawns[white])) {
+            if (!(FileBBMask[whiteKingFile+1] & brd->pawns[black])) {
+                bigPenaltyCt += 1;
+            } else {
+                smallPenaltyCt += 1;
+            }
+        }
+    }
+
+    if (whiteKingFile - 1 >= 0) {
+        if (!(FileBBMask[whiteKingFile-1] & brd->pawns[white])) {
+            if (!(FileBBMask[whiteKingFile-1] & brd->pawns[black])) {
+                bigPenaltyCt += 1;
+            } else {
+                smallPenaltyCt += 1;
+            }
+        }
+    }
+
+    evaluation += semiOpenFilePenalty[smallPenaltyCt];
+    evaluation += openFilePenalty[bigPenaltyCt];
+
+    smallPenaltyCt = 0;
+    bigPenaltyCt = 0;
+    int blackKingFile = brd->kingSq[black] % 8;
+
+    if(!(FileBBMask[blackKingFile] & brd->pawns[black])){
+        if (!(FileBBMask[blackKingFile] & brd->pawns[white])){
+            bigPenaltyCt += 1;
+        }else{
+            smallPenaltyCt += 1;
+        }
+        evaluation += openFileToKingPenalty;
+    }
+
+    if (whiteKingFile + 1 < 8) {
+        if (!(FileBBMask[blackKingFile+1] & brd->pawns[black])) {
+            if (!(FileBBMask[blackKingFile+1] & brd->pawns[white])) {
+                bigPenaltyCt += 1;
+            } else {
+                smallPenaltyCt += 1;
+            }
+        }
+    }
+
+    if (whiteKingFile - 1 >= 0) {
+        if (!(FileBBMask[blackKingFile-1] & brd->pawns[black])) {
+            if (!(FileBBMask[blackKingFile-1] & brd->pawns[white])) {
+                bigPenaltyCt += 1;
+            } else {
+                smallPenaltyCt += 1;
+            }
+        }
+    }
+
+    evaluation -= semiOpenFilePenalty[smallPenaltyCt];
+    evaluation -= openFilePenalty[bigPenaltyCt];
+
+    return evaluation * brd->midMultiplier;
+}
 
 int mainEval(Board *brd){
 
@@ -427,10 +511,11 @@ int mainEval(Board *brd){
     score += evalPassedPawns(brd);
     score += evalIsolatedPawns(brd);
 
-    score += evalMobilityBonus(brd);
+    //score += evalMobilityBonus(brd);
 
     /// King safety
     score += pawnShield(brd);
+    score += openFilesNearKing(brd);
 
     if (brd->side == white){
         return score;

@@ -18,7 +18,7 @@ void startUI() {
     initPawnShieldBB();
 
     // andre inits
-    FENBoardUpdater(&board, FEN);
+    FENBoardUpdater(&board, standardFen);
 
     playerMenu(&board, &info);
 }
@@ -28,6 +28,7 @@ int main(){
     uciCommunication();
     return 0;
 }
+
 
 
 
